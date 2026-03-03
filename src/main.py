@@ -12,10 +12,17 @@ import argparse
 import time
 import signal
 import sys
+import threading
 from pathlib import Path
 
+# Fix Windows console encoding for Japanese/emoji output
+import os
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 from .config import Config
-from .can_reader import CANReader, CarState
+from .can_reader import CANReader, CarState, Gear
 from .brain import PiiBrain
 from .voice import Voice, VoiceConfig
 from .memory import SessionMemory
@@ -28,39 +35,15 @@ def signal_handler(sig, frame):
     print("\n👋 Shutting down Pii-chan...")
     running = False
 
-def main():
-    global running
-    
-    parser = argparse.ArgumentParser(description="🐣 ピーちゃん - AI Car Companion")
-    parser.add_argument("--config", default="config.yaml", help="Config file path")
-    parser.add_argument("--simulate", action="store_true", help="Use simulated CAN data")
-    parser.add_argument("--simulator", action="store_true", help="Run interactive simulator")
-    parser.add_argument("--no-voice", action="store_true", help="Disable voice output")
-    parser.add_argument("--no-model", action="store_true", help="Use rule-based responses (no LLM)")
-    args = parser.parse_args()
-    
-    # Load config
-    config = Config.load(args.config)
-    
-    # Interactive simulator mode
-    if args.simulator:
-        from .simulator import DrivingSimulator
-        sim = DrivingSimulator(config)
-        sim.start()
-        return
-    
+
+def init_components(args, config):
+    """Initialize all Pii-chan components. Returns (can, voice, brain, memory)."""
     print("=" * 50)
     print("🐣 ピーちゃん (Pii-chan) v0.1.0")
     print("=" * 50)
     print()
-    
-    # Setup signal handler
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    
-    # Initialize components
     print("Initializing components...")
-    
+
     # CAN reader
     interface = "mock" if args.simulate else config.can.interface
     can = CANReader(
@@ -69,7 +52,7 @@ def main():
         dbc_path=config.can.dbc_path
     )
     print(f"  ✓ CAN interface: {interface}")
-    
+
     # Voice
     if args.no_voice:
         voice = Voice(VoiceConfig(engine="mock"))
@@ -86,14 +69,14 @@ def main():
         else:
             print(f"  ⚠ Voice: VOICEVOX not available, using mock")
             voice = Voice(VoiceConfig(engine="mock"))
-    
+
     # Brain
     model_path = None if args.no_model else config.llm.model_path
     if model_path and not Path(model_path).exists():
         print(f"  ⚠ Model not found: {model_path}")
-        print("    Run without --no-model or download a model first")
+        print("    Running in rule-based mode")
         model_path = None
-        
+
     brain = PiiBrain(
         model_path=model_path,
         personality_path=config.brain.personality_path,
@@ -102,67 +85,228 @@ def main():
         temperature=config.llm.temperature
     )
     print(f"  ✓ Brain: {'LLM' if model_path else 'rule-based'}")
-    
+
     # Memory
     memory = SessionMemory(config.db_path)
     brain.set_memory(memory)
     print(f"  ✓ Memory: {config.db_path}")
-    
+
     # Connect brain to CAN events
     can.add_callback(brain.on_can_event)
-    
+
+    return can, voice, brain, memory
+
+
+def print_help():
+    """Print available text-mode commands."""
     print()
-    print("Starting Pii-chan...")
-    print("(Press Ctrl+C to stop)")
+    print("Commands:")
+    print("  engine          - Toggle engine on/off")
+    print("  gear p/r/n/d    - Change gear (park/reverse/neutral/drive)")
+    print("  speed <kmh>     - Set speed (e.g. 'speed 60')")
+    print("  brake           - Toggle brake")
+    print("  brake hard      - Hard brake")
+    print("  door            - Toggle driver door open/close")
+    print("  talk            - Force Pii-chan to speak")
+    print("  state           - Show current car state")
+    print("  help            - Show this help")
+    print("  quit / exit     - Exit")
     print()
-    
-    # Start session
+
+
+def print_state(state: CarState):
+    """Print current car state summary."""
+    gear_names = {
+        Gear.PARK: "P", Gear.REVERSE: "R",
+        Gear.NEUTRAL: "N", Gear.DRIVE: "D", Gear.BRAKE: "B",
+    }
+    print()
+    print(f"  Engine:  {'ON (RPM: {:.0f})'.format(state.engine_rpm) if state.engine_running else 'OFF'}")
+    print(f"  Gear:    {gear_names.get(state.gear, '?')}")
+    print(f"  Speed:   {state.speed_kmh:.0f} km/h")
+    print(f"  Brake:   {'PRESSED' if state.brake_pressed else 'released'}")
+    print(f"  Door:    {'OPEN' if state.any_door_open else 'closed'}")
+    print(f"  Battery: {state.battery_soc:.0f}%")
+    print()
+
+
+def think_loop(brain, can, voice, memory, config):
+    """Background thread that runs Pii-chan's think cycle."""
+    global running
+    think_interval = config.brain.think_interval
+    last_think = 0
+
+    while running:
+        now = time.time()
+        if now - last_think >= think_interval:
+            response = brain.think(
+                can.state,
+                cooldown=config.brain.speech_cooldown
+            )
+            if response:
+                voice.speak(response)
+                if brain.current_session:
+                    memory.log_speech(response, brain.current_session.session_id)
+            last_think = now
+        time.sleep(0.1)
+
+
+def run_text_mode(args, config):
+    """Interactive text-based mode for testing without pygame."""
+    global running
+
+    can, voice, brain, memory = init_components(args, config)
+
+    print()
+    print("Text mode ready! Type 'help' for commands.")
+    print_help()
+
+    # Start session and CAN
     brain.start_session()
     can.start()
-    
+
     # Greeting
-    greeting = "ピピッ！起動完了！よろしくね〜"
-    voice.speak(greeting)
-    
-    # Main loop
-    last_think = 0
-    think_interval = config.brain.think_interval
-    
+    voice.speak("ピピッ！起動完了！よろしくね〜")
+
+    # Start background think loop
+    thinker = threading.Thread(target=think_loop, args=(brain, can, voice, memory, config), daemon=True)
+    thinker.start()
+
     try:
         while running:
-            now = time.time()
-            
-            # Think periodically
-            if now - last_think >= think_interval:
-                response = brain.think(
-                    can.state,
-                    cooldown=config.brain.speech_cooldown
-                )
-                
-                if response:
-                    voice.speak(response)
-                    
-                    # Log to memory
-                    if brain.current_session:
-                        memory.log_speech(
-                            response,
-                            brain.current_session.session_id
-                        )
-                        
-                last_think = now
-                
-            time.sleep(0.1)
-            
+            try:
+                cmd = input("pii> ").strip().lower()
+            except EOFError:
+                break
+
+            if not cmd:
+                continue
+
+            parts = cmd.split()
+            verb = parts[0]
+
+            if verb in ("quit", "exit", "q"):
+                break
+
+            elif verb == "help":
+                print_help()
+
+            elif verb == "engine":
+                new_state = not can.state.engine_running
+                can.mock_set_engine(new_state, rpm=800 if new_state else 0)
+                print(f"  Engine {'ON' if new_state else 'OFF'}")
+
+            elif verb == "gear":
+                if len(parts) < 2:
+                    print("  Usage: gear p/r/n/d")
+                    continue
+                gear_map = {
+                    "p": Gear.PARK, "park": Gear.PARK,
+                    "r": Gear.REVERSE, "reverse": Gear.REVERSE,
+                    "n": Gear.NEUTRAL, "neutral": Gear.NEUTRAL,
+                    "d": Gear.DRIVE, "drive": Gear.DRIVE,
+                    "b": Gear.BRAKE, "brake": Gear.BRAKE,
+                }
+                g = gear_map.get(parts[1])
+                if g is None:
+                    print(f"  Unknown gear '{parts[1]}'. Use p/r/n/d/b")
+                else:
+                    can.mock_set_gear(g)
+                    print(f"  Gear -> {g.name}")
+
+            elif verb == "speed":
+                if len(parts) < 2:
+                    print("  Usage: speed <kmh>")
+                    continue
+                try:
+                    spd = float(parts[1])
+                    can.mock_set_speed(max(0, spd))
+                    print(f"  Speed -> {spd:.0f} km/h")
+                except ValueError:
+                    print(f"  Invalid speed '{parts[1]}'")
+
+            elif verb == "brake":
+                if len(parts) >= 2 and parts[1] == "hard":
+                    can.mock_set_brake(True, pressure=150)
+                    print("  HARD BRAKE!")
+                else:
+                    new_brake = not can.state.brake_pressed
+                    can.mock_set_brake(new_brake)
+                    print(f"  Brake {'PRESSED' if new_brake else 'released'}")
+
+            elif verb == "door":
+                new_door = not can.state.door_fl_open
+                can.mock_set_doors(fl=new_door)
+                print(f"  Driver door {'OPEN' if new_door else 'CLOSED'}")
+
+            elif verb == "talk":
+                response = brain.force_response(can.state)
+                voice.speak(response)
+
+            elif verb == "state":
+                print_state(can.state)
+
+            else:
+                print(f"  Unknown command: {verb} (type 'help' for commands)")
+
     finally:
-        # Cleanup
+        running = False
         print("\nStopping...")
         brain.end_session()
         can.stop()
-        
-        # Goodbye
         voice.speak("またね〜！")
-        
         print("👋 Goodbye!")
+
+
+def run_passive_mode(args, config):
+    """Passive mode — just listens to CAN and speaks. For real hardware."""
+    global running
+
+    can, voice, brain, memory = init_components(args, config)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    print()
+    print("Passive mode — listening to CAN bus...")
+    print("(Press Ctrl+C to stop)")
+    print()
+
+    brain.start_session()
+    can.start()
+    voice.speak("ピピッ！起動完了！よろしくね〜")
+
+    try:
+        think_loop(brain, can, voice, memory, config)
+    finally:
+        print("\nStopping...")
+        brain.end_session()
+        can.stop()
+        voice.speak("またね〜！")
+        print("👋 Goodbye!")
+
+
+def main():
+    global running
+
+    parser = argparse.ArgumentParser(description="Pii-chan - AI Car Companion")
+    parser.add_argument("--config", default="config.yaml", help="Config file path")
+    parser.add_argument("--simulate", action="store_true", help="Use simulated CAN data (text mode)")
+    parser.add_argument("--simulator", action="store_true", help="Run interactive pygame simulator")
+    parser.add_argument("--no-voice", action="store_true", help="Disable voice output")
+    parser.add_argument("--no-model", action="store_true", help="Use rule-based responses (no LLM)")
+    args = parser.parse_args()
+
+    config = Config.load(args.config)
+
+    if args.simulator:
+        from .simulator import DrivingSimulator
+        sim = DrivingSimulator(config)
+        sim.start()
+    elif args.simulate:
+        run_text_mode(args, config)
+    else:
+        run_passive_mode(args, config)
 
 
 if __name__ == "__main__":

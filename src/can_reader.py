@@ -284,33 +284,33 @@ class CANReader:
                 
     # Mock state setters for simulation
     def mock_set_gear(self, gear: Gear):
-        old = CarState(**self.state.__dict__)
+        old = CarState(**{k: v for k, v in self.state.__dict__.items() if k != 'any_door_open'})
         self.state.gear = gear
         self.state.timestamp = time.time()
         self._detect_events(old)
         
     def mock_set_speed(self, speed_kmh: float):
-        old = CarState(**self.state.__dict__)
+        old = CarState(**{k: v for k, v in self.state.__dict__.items() if k != 'any_door_open'})
         self.state.speed_kmh = speed_kmh
         self.state.timestamp = time.time()
         self._detect_events(old)
         
     def mock_set_engine(self, running: bool, rpm: float = 800):
-        old = CarState(**self.state.__dict__)
+        old = CarState(**{k: v for k, v in self.state.__dict__.items() if k != 'any_door_open'})
         self.state.engine_running = running
         self.state.engine_rpm = rpm if running else 0
         self.state.timestamp = time.time()
         self._detect_events(old)
         
     def mock_set_brake(self, pressed: bool, pressure: float = 50):
-        old = CarState(**self.state.__dict__)
+        old = CarState(**{k: v for k, v in self.state.__dict__.items() if k != 'any_door_open'})
         self.state.brake_pressed = pressed
         self.state.brake_pressure = pressure if pressed else 0
         self.state.timestamp = time.time()
         self._detect_events(old)
         
     def mock_set_doors(self, fl=False, fr=False, rl=False, rr=False):
-        old = CarState(**self.state.__dict__)
+        old = CarState(**{k: v for k, v in self.state.__dict__.items() if k != 'any_door_open'})
         self.state.door_fl_open = fl
         self.state.door_fr_open = fr
         self.state.door_rl_open = rl
