@@ -4,6 +4,7 @@
 
 from .config import Config
 from .can_reader import CANReader, CarState, Gear
+from .can_writer import CANWriter, ClimateState
 from .brain import PiiBrain
 from .voice import Voice, VoiceConfig
 from .memory import SessionMemory
@@ -14,6 +15,8 @@ __all__ = [
     "CANReader", 
     "CarState",
     "Gear",
+    "CANWriter",
+    "ClimateState",
     "PiiBrain",
     "Voice",
     "VoiceConfig", 

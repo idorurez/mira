@@ -17,6 +17,7 @@ Pii-chan is an AI spirit that lives in your car. She reads CAN bus data to under
 - 💾 **Session memory** — Remembers past drives and references them naturally
 - 🔊 **Japanese TTS** — VOICEVOX for cute, natural Japanese voice
 - 😊 **Personality** — Kind, helpful, slightly clumsy AI spirit who loves her "home"
+- 🌡️ **Climate control** — (Coming soon) Voice-activated HVAC control
 
 ## Quick Start
 
@@ -222,10 +223,20 @@ pytest tests/ -v
 - [x] LLM integration
 - [x] VOICEVOX TTS
 - [x] Session memory
+- [x] CAN sniffing guide
+- [ ] Decode Sienna HVAC CAN messages
+- [ ] Climate control commands
 - [ ] Face/expression display
 - [ ] Real CAN bus testing
 - [ ] Raspberry Pi deployment
 - [ ] Car installation guide
+
+## Documentation
+
+- [README.md](README.md) — This file
+- [docs/MODEL_SETUP.md](docs/MODEL_SETUP.md) — LLM model download & setup
+- [docs/VOICEVOX_SETUP.md](docs/VOICEVOX_SETUP.md) — Japanese TTS setup
+- [docs/CAN_SNIFFING_GUIDE.md](docs/CAN_SNIFFING_GUIDE.md) — Reverse engineering HVAC CAN messages
 
 ## Contributing
 
