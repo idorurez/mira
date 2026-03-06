@@ -429,16 +429,8 @@ class PiiBrain:
         return text
         
     # Rule-based responses — English, minimal set
+    # engine_start and engine_stop are handled specially by _get_contextual_greeting/goodbye
     RULE_BASED_RESPONSES = {
-        "engine_start": [
-            "Hey! Ready when you are.",
-            "Beep! Let's go!",
-            "Morning! Ready to roll.",
-        ],
-        "engine_stop": [
-            "Nice drive! See you next time.",
-            "We're here! Good job.",
-        ],
         "hard_brake": [
             "Whoa! You okay?",
             "That was close!",
@@ -447,18 +439,137 @@ class PiiBrain:
             "Heads up - fuel's getting low.",
             "Might want to find a gas station soon.",
         ],
-        # Removed all the annoying ones:
-        # gear changes, door, speed, start/stop moving
     }
+
+    def _get_time_of_day(self) -> str:
+        """Get current time of day category."""
+        hour = datetime.now().hour
+        if 5 <= hour < 12:
+            return "morning"
+        elif 12 <= hour < 17:
+            return "afternoon"
+        elif 17 <= hour < 21:
+            return "evening"
+        else:
+            return "night"
+
+    def _get_time_since_last_drive(self) -> Optional[float]:
+        """Get seconds since last drive ended, or None if no history."""
+        if self.memory:
+            return self.memory.get_time_since_last_drive()
+        return None
+
+    def _get_contextual_greeting(self) -> str:
+        """Generate a context-aware greeting based on time and history."""
+        import random
+        
+        time_of_day = self._get_time_of_day()
+        time_since_last = self._get_time_since_last_drive()
+        
+        # Time-based greetings
+        time_greetings = {
+            "morning": [
+                "Good morning! Ready to go?",
+                "Morning! Let's do this.",
+                "Rise and shine! Where to?",
+            ],
+            "afternoon": [
+                "Hey! Ready when you are.",
+                "Afternoon! Let's roll.",
+                "Hey there! Where we headed?",
+            ],
+            "evening": [
+                "Evening! Ready to go?",
+                "Hey! Heading home?",
+                "Evening drive? Nice.",
+            ],
+            "night": [
+                "Late night drive? I'm here.",
+                "Hey night owl. Ready when you are.",
+                "Burning the midnight oil? Let's go.",
+            ],
+        }
+        
+        # Check time since last drive for special greetings
+        if time_since_last is not None:
+            hours_since = time_since_last / 3600
+            days_since = time_since_last / 86400
+            
+            if hours_since < 1:
+                # Very recent - back again quickly
+                return random.choice([
+                    "Back already? Let's go!",
+                    "That was quick! Ready.",
+                    "Round two? I'm ready.",
+                ])
+            elif days_since >= 7:
+                # Been a while
+                return random.choice([
+                    f"Hey! It's been a while. Missed you!",
+                    f"Long time no see! Ready to roll?",
+                    f"Hey stranger! Good to see you.",
+                ])
+            elif days_since >= 3:
+                # Few days
+                return random.choice([
+                    "Hey! Been a few days. Ready?",
+                    "Good to see you again! Let's go.",
+                ])
+        
+        # Default to time-based greeting
+        return random.choice(time_greetings.get(time_of_day, time_greetings["afternoon"]))
+
+    def _get_contextual_goodbye(self) -> str:
+        """Generate a context-aware goodbye."""
+        import random
+        
+        time_of_day = self._get_time_of_day()
+        
+        # Could add trip stats here later
+        goodbyes = {
+            "morning": [
+                "Have a good one!",
+                "See you later!",
+                "Good luck today!",
+            ],
+            "afternoon": [
+                "Nice drive! See you.",
+                "Later!",
+                "Take care!",
+            ],
+            "evening": [
+                "Have a good night!",
+                "Rest up! See you next time.",
+                "Good night!",
+            ],
+            "night": [
+                "Get some rest! Night.",
+                "Safe inside? Good. Night!",
+                "Late one! Get some sleep.",
+            ],
+        }
+        
+        return random.choice(goodbyes.get(time_of_day, goodbyes["afternoon"]))
 
     def _rule_based_response_for(self, event_type: str) -> Optional[str]:
         """Get a rule-based response for a specific event."""
         import random
+        
+        # Handle contextual events specially
+        if event_type == "engine_start":
+            text = self._get_contextual_greeting()
+            self._record_speech(text)
+            return text
+        elif event_type == "engine_stop":
+            text = self._get_contextual_goodbye()
+            self._record_speech(text)
+            return text
+        
+        # Standard responses for other events
         options = self.RULE_BASED_RESPONSES.get(event_type)
         if options:
             text = random.choice(options)
-            self.last_speech_time = time.time()
-            self.last_speech_text = text
+            self._record_speech(text)
             return text
         return None
 
