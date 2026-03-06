@@ -1,199 +1,125 @@
 # 🐣 ピーちゃん (Pii-chan)
 
-**Your AI copilot in the car — not a toy, an actual assistant.**
+**Your AI copilot in the car — OpenClaw with a face and vehicle awareness.**
 
-Pii-chan is an OpenClaw node that lives in your vehicle. Full Claude intelligence, voice control, CAN bus integration. It's not a novelty chatbot with canned responses — it's your actual AI assistant, just in your car.
+Pii-chan is an OpenClaw node that lives in your vehicle. Full Claude intelligence, voice control, tunable personality, and awareness of your car's state.
 
-> "Set rear climate to feet only" → *does it*  
-> "What's my first meeting today?" → *checks calendar*  
-> "Read my unread messages" → *reads them aloud*  
-> "Remind me to get gas on the way home" → *sets reminder*
+> "Good morning! Traffic looks light today. You've got a meeting at 10."
 
-**Target vehicle:** 2025 Toyota Sienna (adaptable to others)
+**Target vehicles:** Toyota Sienna 2025, 4Runner 2018 (adaptable to others)
 
-## Why This Exists
+## What Is This?
 
-Most "car AI" projects are demos. Talk to a local LLM, get dumb responses, novelty wears off in a week.
+Not another car chatbot. Pii-chan is:
 
-Pii-chan is different:
-- **Full Claude access** via OpenClaw — not a 1.5B model pretending to understand
-- **All OpenClaw capabilities** — calendar, messages, reminders, web search, memory
-- **CAN bus as a skill** — climate control is a bonus feature, not the whole product
-- **Actually useful daily** — you'd miss it if it was gone
+- **Your actual OpenClaw** — calendar, messages, reminders, web search, memory
+- **Car-aware** — knows speed, battery, doors, climate state
+- **Persistent presence** — dedicated display, greets you, has personality
+- **Hands-free** — wake word activation, voice control
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [PRODUCT.md](PRODUCT.md) | Full product spec, MVP scope, architecture |
+| [docs/DEPLOYMENT_PLAN.md](docs/DEPLOYMENT_PLAN.md) | Technical deployment details |
+| [docs/CAN_SNIFFING_GUIDE.md](docs/CAN_SNIFFING_GUIDE.md) | Reverse engineering HVAC CAN |
+
+## MVP Scope
+
+**In:**
+- OpenClaw node (full Claude access)
+- Voice I/O with wake word
+- Dedicated display with toggleable visibility
+- Tunable personality
+- CAN read (vehicle state awareness)
+- State memory (can undo commands)
+
+**Out (for now):**
+- CAN write / climate control (needs sniffing first)
+- Multi-user
+- Always-listening (wake word only for MVP)
+- Dedicated 4G (hotspot first, upgrade later)
+
+## Hardware (~$200)
+
+| Component | Purpose |
+|-----------|---------|
+| Raspberry Pi 5 8GB | Compute |
+| Waveshare 2-CH CAN HAT | CAN bus |
+| HyperPixel 4.0 | Display |
+| USB Microphone | Voice input |
+| MAX98357A + Speaker | Voice output |
+| 12V→5V 5A Converter | Power |
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         Your Car                            │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │              Raspberry Pi 5 (OpenClaw Node)           │  │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌───────────────┐  │  │
-│  │  │ Voice In    │  │ Voice Out   │  │ CAN Interface │  │  │
-│  │  │ (Whisper)   │  │ (TTS)       │  │ (Read/Write)  │  │  │
-│  │  └──────┬──────┘  └──────▲──────┘  └───────┬───────┘  │  │
-│  │         │                │                  │          │  │
-│  │         └────────────────┼──────────────────┘          │  │
-│  │                          │                              │  │
-│  │              ┌───────────┴───────────┐                 │  │
-│  │              │   OpenClaw Gateway    │                 │  │
-│  │              │   (local daemon)      │                 │  │
-│  │              └───────────┬───────────┘                 │  │
-│  └──────────────────────────┼────────────────────────────┘  │
-└─────────────────────────────┼───────────────────────────────┘
-                              │ Phone tether / Car WiFi
-                              ▼
-                    ┌───────────────────┐
-                    │   Claude (API)    │
-                    │   Full LLM power  │
-                    └───────────────────┘
+┌─────────────────────────────────────┐
+│         Car (Pi 5)                  │
+│  ┌───────────┐  ┌────────────────┐  │
+│  │ Voice I/O │  │ Display (Face) │  │
+│  └─────┬─────┘  └───────┬────────┘  │
+│        └────────┬───────┘           │
+│                 │                   │
+│        ┌────────┴────────┐          │
+│        │  OpenClaw Node  │          │
+│        └────────┬────────┘          │
+│                 │                   │
+│        ┌────────┴────────┐          │
+│        │   CAN Reader    │          │
+│        └─────────────────┘          │
+└─────────────────────────────────────┘
+                  │
+           WiFi (hotspot)
+                  │
+                  ▼
+         ┌───────────────┐
+         │ Your Gateway  │
+         │ (Claude API)  │
+         └───────────────┘
 ```
-
-**Key insight:** The Pi is just the interface layer. All the smarts come from Claude via OpenClaw. CAN bus reading/writing is exposed as tools that Claude can use.
-
-## What Pii-chan Can Do
-
-### 🚗 Car Stuff (CAN Bus)
-- Read vehicle state (speed, gear, doors, battery, etc.)
-- Voice-controlled climate ("I'm cold" → adjusts HVAC)
-- Event awareness (engine start, hard brake, fuel low)
-- Trip context for relevant suggestions
-
-### 📅 Assistant Stuff (OpenClaw)
-- Calendar queries and reminders
-- Read/send messages
-- Weather and traffic
-- Web search
-- Todo lists
-- Anything OpenClaw can do
-
-### 🎤 Voice Control
-- Wake word or push-to-talk
-- Natural conversation while driving
-- Hands-free everything
-
-## Quick Start (Development)
-
-### 1. Clone and Setup
-
-```bash
-git clone git@github.com:idorurez/pii-chan.git
-cd pii-chan
-./setup.sh
-source venv/bin/activate
-```
-
-### 2. Run in Simulation Mode
-
-```bash
-# Text-based testing
-python -m src.main --simulate
-
-# Visual simulator (requires pygame)
-python -m src.main --simulator
-```
-
-### 3. Connect to OpenClaw
-
-(Coming soon — node registration flow)
-
-## Hardware (~$200)
-
-| Component | Purpose | Price |
-|-----------|---------|-------|
-| Raspberry Pi 5 8GB | Compute | ~$80 |
-| Waveshare 2-CH CAN HAT | CAN bus interface | ~$25 |
-| HyperPixel 4.0 | Display (optional) | ~$55 |
-| MAX98357A + Speaker | Audio output | ~$11 |
-| USB Mic | Voice input | ~$15 |
-| 12V→5V Converter | Power | ~$10 |
-| **Total** | | **~$200** |
-
-Plus CAN adapter for sniffing: WiCAN OBD ~$50
 
 ## Project Structure
 
 ```
 pii-chan/
-├── src/
-│   ├── main.py              # Entry point
-│   ├── node.py              # OpenClaw node integration
-│   ├── can_interface.py     # CAN read/write (exposed as tools)
-│   ├── voice_io.py          # STT + TTS
-│   └── config.py            # Configuration
+├── PRODUCT.md              # Product spec (start here)
+├── README.md               # This file
+├── src/                    # Source code
+│   ├── node.py             # OpenClaw node integration
+│   ├── main.py             # Entry point
+│   ├── can_reader.py       # CAN bus reading
+│   └── voice.py            # TTS
 ├── skills/
-│   └── can-control/         # CAN bus skill for OpenClaw
-│       ├── SKILL.md
-│       ├── can_reader.py
-│       └── can_writer.py
+│   └── car-control/        # OpenClaw skill for car commands
 ├── data/
-│   ├── toyota_sienna.dbc    # CAN message definitions
-│   └── personality.md       # Pii-chan's voice/style
-├── docs/
-│   ├── CAN_SNIFFING_GUIDE.md
-│   ├── NODE_SETUP.md
-│   └── HARDWARE.md
-└── config.yaml
+│   ├── personality.md      # Pii-chan's personality config
+│   └── toyota_sienna.dbc   # CAN message definitions
+└── docs/
+    ├── DEPLOYMENT_PLAN.md  # Technical details
+    └── CAN_SNIFFING_GUIDE.md
 ```
 
-## CAN Bus Integration
+## Status
 
-CAN reading/writing is exposed as OpenClaw tools:
+🔄 **Planning complete, entering build phase**
 
-```yaml
-# Tools available to Claude when Pii-chan node is active
-can_read:
-  description: Read current vehicle state
-  returns: speed, gear, doors, battery, climate, etc.
+- [x] Product spec defined
+- [x] Architecture designed
+- [x] Skill structure created
+- [ ] Hardware acquired
+- [ ] OpenClaw node running on Pi
+- [ ] Voice I/O working
+- [ ] Display + face
+- [ ] CAN reading integrated
+- [ ] Daily driver testing
 
-can_climate:
-  description: Control HVAC
-  params: zone, temp, fan, mode, sync
-```
+## Quick Links
 
-### Climate Control Status
-
-The 2025 Sienna uses Toyota SecOC for safety messages, but HVAC is on the body CAN (likely unprotected). We need to:
-
-1. ✅ Get CAN hardware (WiCAN OBD recommended)
-2. ⏳ Sniff HVAC messages while using controls
-3. ⏳ Decode message IDs and values
-4. ⏳ Implement write commands
-
-See [docs/CAN_SNIFFING_GUIDE.md](docs/CAN_SNIFFING_GUIDE.md) for the procedure.
-
-## Roadmap
-
-### Phase 1: Foundation ✅
-- [x] CAN bus reading prototype
-- [x] Voice output (TTS)
-- [x] Simulator for testing
-- [x] Basic event reactions
-
-### Phase 2: OpenClaw Integration 🔄
-- [ ] Pi as OpenClaw node
-- [ ] CAN exposed as tools
-- [ ] Voice input (STT)
-- [ ] Full Claude access
-
-### Phase 3: Climate Control
-- [ ] Decode Sienna HVAC CAN messages
-- [ ] Implement climate commands
-- [ ] Natural language → CAN writes
-
-### Phase 4: Polish
-- [ ] Wake word detection
-- [ ] Display UI (optional)
-- [ ] Car installation guide
-- [ ] Multi-vehicle support
-
-## Philosophy
-
-**Useful, not cute.** Pii-chan only speaks when it adds value. No constant chatter. No "Did you know?" trivia. Just an assistant that happens to live in your car.
-
-**OpenClaw first, car second.** The CAN stuff is a capability enhancement. Even without climate control, Pii-chan is useful because it's a full AI assistant with voice I/O.
-
-**Local processing where it matters.** Voice capture and TTS run locally for low latency. The thinking happens in Claude for quality.
+- [Product Spec](PRODUCT.md) — Full MVP definition
+- [Deployment Plan](docs/DEPLOYMENT_PLAN.md) — How it all connects
+- [CAN Sniffing Guide](docs/CAN_SNIFFING_GUIDE.md) — For climate control later
 
 ## License
 
@@ -201,4 +127,4 @@ MIT
 
 ---
 
-*Pii-chan: Your car, smarter.*
+*Pii-chan: OpenClaw in your car.*
