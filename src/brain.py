@@ -69,8 +69,8 @@ class PiiBrain:
         self._event_batch_deadline: float = 0  # when to process batched events
         self._event_batch_window: float = 0.3  # wait this long to batch rapid events
 
-        # Idle chatter control
-        self.idle_chatter: bool = True  # False = only respond to events, no unprompted speech
+        # Idle chatter control — OFF by default (assistant mode, not companion mode)
+        self.idle_chatter: bool = False
 
         # Memory
         self.memory: Optional[SessionMemory] = None
@@ -136,34 +136,35 @@ class PiiBrain:
             )
             
     # Events that should trigger an immediate response
+    # REDUCED SET: Only truly important events, not routine actions
     REACTIVE_EVENTS = {
-        "engine_start", "engine_stop",
-        "gear_change_reverse", "gear_change_park", "gear_change_drive",
-        "door_opened", "door_closed",
-        "hard_brake", "high_speed", "fuel_low",
-        "start_moving", "stopped",
-        "bsm_left", "bsm_right",
+        "engine_start",      # Greeting at start of trip
+        "engine_stop",       # Goodbye at end of trip
+        "hard_brake",        # Safety concern
+        "fuel_low",          # Actually useful alert
+        # "bsm_left", "bsm_right",  # Maybe useful, but car already beeps
+        # Everything else removed - too annoying
     }
 
     def on_can_event(self, state: CarState, event_name: str):
         """Handle CAN event callback."""
-        # Create human-readable description
+        # Create human-readable description (English)
         descriptions = {
-            "engine_start": "エンジンがかかった",
-            "engine_stop": "エンジンが止まった",
-            "gear_change_park": "パーキングに入れた",
-            "gear_change_reverse": "バックギアに入れた",
-            "gear_change_drive": "ドライブに入れた",
-            "gear_change_neutral": "ニュートラルに入れた",
-            "start_moving": "走り始めた",
-            "stopped": "停車した",
-            "high_speed": "時速100km超えた",
-            "door_opened": "ドアが開いた",
-            "door_closed": "ドアが閉まった",
-            "hard_brake": "急ブレーキをかけた",
-            "bsm_left": "左の死角に車がいる",
-            "bsm_right": "右の死角に車がいる",
-            "fuel_low": "燃料が少なくなった",
+            "engine_start": "Engine started",
+            "engine_stop": "Engine stopped",
+            "gear_change_park": "Shifted to Park",
+            "gear_change_reverse": "Shifted to Reverse",
+            "gear_change_drive": "Shifted to Drive",
+            "gear_change_neutral": "Shifted to Neutral",
+            "start_moving": "Started moving",
+            "stopped": "Stopped",
+            "high_speed": "Speed over 100 km/h",
+            "door_opened": "Door opened",
+            "door_closed": "Door closed",
+            "hard_brake": "Hard brake applied",
+            "bsm_left": "Vehicle in left blind spot",
+            "bsm_right": "Vehicle in right blind spot",
+            "fuel_low": "Fuel level low",
         }
         desc = descriptions.get(event_name, event_name)
         self.add_event(event_name, desc)
@@ -182,36 +183,36 @@ class PiiBrain:
         # Time of day
         hour = now.hour
         if 5 <= hour < 10:
-            time_of_day = "朝"
+            time_of_day = "morning"
         elif 10 <= hour < 17:
-            time_of_day = "昼"
+            time_of_day = "afternoon"
         elif 17 <= hour < 21:
-            time_of_day = "夕方"
+            time_of_day = "evening"
         else:
-            time_of_day = "夜"
+            time_of_day = "night"
             
         # Gear name
         gear_names = {
-            Gear.PARK: "P (駐車)",
-            Gear.REVERSE: "R (バック)",
-            Gear.NEUTRAL: "N (ニュートラル)",
-            Gear.DRIVE: "D (ドライブ)",
-            Gear.BRAKE: "B (ブレーキ)",
+            Gear.PARK: "P (Park)",
+            Gear.REVERSE: "R (Reverse)",
+            Gear.NEUTRAL: "N (Neutral)",
+            Gear.DRIVE: "D (Drive)",
+            Gear.BRAKE: "B (Engine Brake)",
         }
         
         # EV mode names
-        ev_modes = {0: "ノーマル", 1: "EV", 2: "ECO", 3: "パワー"}
+        ev_modes = {0: "Normal", 1: "EV", 2: "ECO", 3: "Power"}
         
         # Build current state section
-        current_state = f"""【現在の状態】
-- 時刻: {now.strftime('%H:%M')} ({time_of_day})
-- ギア: {gear_names.get(state.gear, '不明')}
-- 速度: {state.speed_kmh:.0f} km/h
-- エンジン: {'動作中' if state.engine_running else '停止'}
-- ハイブリッドバッテリー: {state.battery_soc:.0f}%
-- 走行モード: {ev_modes.get(state.ev_mode, 'ノーマル')}
-- ブレーキ: {'踏んでいる' if state.brake_pressed else '踏んでいない'}
-- ドア: {'開いている' if state.any_door_open else '閉まっている'}"""
+        current_state = f"""[Current State]
+- Time: {now.strftime('%H:%M')} ({time_of_day})
+- Gear: {gear_names.get(state.gear, 'Unknown')}
+- Speed: {state.speed_kmh:.0f} km/h
+- Engine: {'Running' if state.engine_running else 'Off'}
+- Hybrid Battery: {state.battery_soc:.0f}%
+- Drive Mode: {ev_modes.get(state.ev_mode, 'Normal')}
+- Brake: {'Pressed' if state.brake_pressed else 'Released'}
+- Door: {'Open' if state.any_door_open else 'Closed'}"""
         
         # Build recent events section
         if self.recent_events:
@@ -219,9 +220,9 @@ class PiiBrain:
                 f"- {datetime.fromtimestamp(e.timestamp).strftime('%H:%M:%S')} {e.description}"
                 for e in self.recent_events[-10:]  # Last 10 events
             ])
-            events_section = f"\n\n【最近の出来事】\n{events_text}"
+            events_section = f"\n\n[Recent Events]\n{events_text}"
         else:
-            events_section = "\n\n【最近の出来事】\n- 特になし"
+            events_section = "\n\n[Recent Events]\n- Nothing notable"
             
         # Build history section
         history_section = ""
@@ -234,18 +235,18 @@ class PiiBrain:
                         duration_min = (session.end_time - session.start_time) / 60
                         end_str = datetime.fromtimestamp(session.end_time).strftime('%H:%M')
                         history_items.append(
-                            f"- {datetime.fromtimestamp(session.start_time).strftime('%m/%d %H:%M')}〜{end_str} ({duration_min:.0f}分)"
+                            f"- {datetime.fromtimestamp(session.start_time).strftime('%m/%d %H:%M')}-{end_str} ({duration_min:.0f} min)"
                         )
                 if history_items:
-                    history_section = f"\n\n【最近の運転履歴】\n" + "\n".join(history_items)
+                    history_section = f"\n\n[Recent Drives]\n" + "\n".join(history_items)
                     
         # Last speech info — include recent speeches to avoid repeats
         speech_section = ""
         if self._recent_speeches:
             speech_lines = "\n".join(
-                f"- 「{s}」" for s in self._recent_speeches[-5:]
+                f'- "{s}"' for s in self._recent_speeches[-5:]
             )
-            speech_section = f"\n\n【ピーちゃんが最近言ったこと（繰り返さないで！）】\n{speech_lines}"
+            speech_section = f"\n\n[Your Recent Responses - DO NOT REPEAT]\n{speech_lines}"
 
         # Combine situation sections
         situation = (
@@ -263,24 +264,24 @@ class PiiBrain:
 
         if event_hint:
             prompt = (
-                f"【たった今起きたこと】\n- {event_hint}\n\n"
+                f"[Just Happened]\n- {event_hint}\n\n"
                 + situation
-                + "\n\n上の出来事に対してピーちゃんとして一言リアクションしてください。"
-                  "返答はセリフだけ。短く（1文）、カジュアルに。"
+                + "\n\nReact to this event as Pii-chan. "
+                  "One short sentence only. Casual, friendly."
             )
         else:
             prompt = (
                 situation
-                + "\n\n上の状況を見て、ピーちゃんとして一言話してください。"
-                  "話すことがなければ「...」とだけ返してください。"
-                  "返答はセリフだけ。短く（1文）、カジュアルに。"
+                + "\n\nAs Pii-chan, say something if appropriate. "
+                  "If nothing worth saying, just respond with '...' "
+                  "One short sentence only. Casual, friendly."
             )
 
         # Build system prompt with anti-repeat constraint
         system = self.personality
         if self._recent_speeches:
-            forbidden = "、".join(f"「{s}」" for s in self._recent_speeches[-5:])
-            system += f"\n\n【重要】以下のセリフは既に使ったので絶対に使わないで。似た表現もダメ：\n{forbidden}"
+            forbidden = ", ".join(f'"{s}"' for s in self._recent_speeches[-5:])
+            system += f"\n\n[IMPORTANT] Do NOT repeat these phrases or similar: {forbidden}"
 
         messages = [
             {"role": "system", "content": system},
@@ -349,21 +350,21 @@ class PiiBrain:
 
     # Event descriptions for LLM hint
     EVENT_DESCRIPTIONS = {
-        "engine_start": "エンジンがかかった",
-        "engine_stop": "エンジンが止まった",
-        "gear_change_park": "パーキングに入れた",
-        "gear_change_reverse": "バックギアに入れた",
-        "gear_change_drive": "ドライブに入れた",
-        "gear_change_neutral": "ニュートラルに入れた",
-        "start_moving": "走り始めた",
-        "stopped": "停車した",
-        "high_speed": "時速100km超えた",
-        "door_opened": "ドアが開いた",
-        "door_closed": "ドアが閉まった",
-        "hard_brake": "急ブレーキをかけた",
-        "bsm_left": "左の死角に車がいる",
-        "bsm_right": "右の死角に車がいる",
-        "fuel_low": "燃料が少なくなった",
+        "engine_start": "Engine just started - beginning of trip",
+        "engine_stop": "Engine turned off - end of trip",
+        "gear_change_park": "Shifted to Park",
+        "gear_change_reverse": "Shifted to Reverse",
+        "gear_change_drive": "Shifted to Drive",
+        "gear_change_neutral": "Shifted to Neutral",
+        "start_moving": "Started moving",
+        "stopped": "Stopped",
+        "high_speed": "Going over 100 km/h",
+        "door_opened": "Door opened",
+        "door_closed": "Door closed",
+        "hard_brake": "Hard braking - sudden stop",
+        "bsm_left": "Vehicle detected in left blind spot",
+        "bsm_right": "Vehicle detected in right blind spot",
+        "fuel_low": "Fuel level is low",
     }
 
     def react_to_event(self, state: CarState) -> Optional[str]:
@@ -427,60 +428,27 @@ class PiiBrain:
 
         return text
         
+    # Rule-based responses — English, minimal set
     RULE_BASED_RESPONSES = {
         "engine_start": [
-            "おはよう！今日もよろしくね♪",
-            "ピピッ！エンジンかかったね！",
-            "やった、出発だね！",
+            "Hey! Ready when you are.",
+            "Beep! Let's go!",
+            "Morning! Ready to roll.",
         ],
         "engine_stop": [
-            "お疲れさま〜！",
-            "到着かな？お疲れさま！",
-        ],
-        "gear_change_reverse": [
-            "バックするの？後ろ気をつけてね〜",
-            "後ろ、ちゃんと見てね！",
-        ],
-        "gear_change_drive": [
-            "出発だね！",
-            "行こう行こう〜！",
-        ],
-        "gear_change_park": [
-            "パーキングだね",
-            "停まるのかな？",
-        ],
-        "start_moving": [
-            "動き出したね〜",
-            "しゅっぱーつ！",
-        ],
-        "stopped": [
-            "止まったね",
-        ],
-        "high_speed": [
-            "ちょっと速いかも...？",
-            "スピード出てるよ〜気をつけてね",
-        ],
-        "door_opened": [
-            "ドア開いてるよ〜",
-            "あ、ドア開いた！",
-        ],
-        "door_closed": [
-            "ドア閉まったね、OK！",
+            "Nice drive! See you next time.",
+            "We're here! Good job.",
         ],
         "hard_brake": [
-            "わわっ！大丈夫？",
-            "びっくりした...！",
+            "Whoa! You okay?",
+            "That was close!",
         ],
         "fuel_low": [
-            "あ、ガソリン少なくなってきたよ〜",
-            "そろそろ給油した方がいいかも？",
+            "Heads up - fuel's getting low.",
+            "Might want to find a gas station soon.",
         ],
-        "bsm_left": [
-            "左に車いるよ！気をつけて！",
-        ],
-        "bsm_right": [
-            "右に車いるよ！気をつけて！",
-        ],
+        # Removed all the annoying ones:
+        # gear changes, door, speed, start/stop moving
     }
 
     def _rule_based_response_for(self, event_type: str) -> Optional[str]:
@@ -507,13 +475,13 @@ class PiiBrain:
         """Force a response, ignoring cooldown. For testing."""
         llm = self._get_llm()
         if llm is None:
-            return "ピピッ！テストモードだよ〜"
+            return "Beep! Test mode active."
 
         situation = self.build_context(state)
         text = self._generate(situation)
 
         if text in ("...", "") or len(text) < 2:
-            text = "ん〜、特に言うことないかな..."
+            text = "Hmm, nothing much to say right now."
 
         self._record_speech(text)
         return text
@@ -522,16 +490,16 @@ class PiiBrain:
         """Have a conversation with the driver."""
         llm = self._get_llm()
         if llm is None:
-            return "ピピッ！ごめんね、今はお話モードじゃないの〜"
+            return "Beep! Sorry, I can't chat right now."
 
         situation = self.build_context(state)
 
         # Build messages with conversation history
         messages = [
             {"role": "system", "content": self.personality
-             + "\n\nドライバーが話しかけてきました。車の状況を踏まえて、"
-               "ピーちゃんとして自然に会話してください。"
-               "返答は短く（1〜3文）、カジュアルに。\n\n" + situation},
+             + "\n\nThe driver is talking to you. Consider the car's current state "
+               "and respond naturally as Pii-chan. "
+               "Keep responses short (1-2 sentences), casual and friendly.\n\n" + situation},
         ]
 
         # Add recent conversation history (last 6 turns)
@@ -556,7 +524,7 @@ class PiiBrain:
         text = self._clean_response(text)
 
         if not text or len(text) < 2:
-            text = "ん？なんだろ〜"
+            text = "Hmm? What's that?"
 
         # Save to conversation history
         self._chat_history.append({"role": "user", "content": user_message})

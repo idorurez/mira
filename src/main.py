@@ -182,7 +182,7 @@ def run_text_mode(args, config):
     can.start()
 
     # Greeting
-    voice.speak("ピピッ！起動完了！よろしくね〜")
+    voice.speak("Beep! Pii-chan online. Ready when you are!")
 
     # Start background think loop
     thinker = threading.Thread(target=think_loop, args=(brain, can, voice, memory, config), daemon=True)
@@ -279,7 +279,7 @@ def run_text_mode(args, config):
         print("\nStopping...")
         brain.end_session()
         can.stop()
-        voice.speak("またね〜！")
+        voice.speak("See you next time!")
         print("👋 Goodbye!")
 
 
@@ -299,7 +299,7 @@ def run_passive_mode(args, config):
 
     brain.start_session()
     can.start()
-    voice.speak("ピピッ！起動完了！よろしくね〜")
+    voice.speak("Beep! Pii-chan online. Ready when you are!")
 
     try:
         think_loop(brain, can, voice, memory, config)
@@ -307,7 +307,7 @@ def run_passive_mode(args, config):
         print("\nStopping...")
         brain.end_session()
         can.stop()
-        voice.speak("またね〜！")
+        voice.speak("See you next time!")
         print("👋 Goodbye!")
 
 
