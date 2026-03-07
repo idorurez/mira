@@ -8,6 +8,12 @@ Getting Pii-chan running on your Raspberry Pi 5.
 - SD Card with Raspberry Pi OS (64-bit) flashed
 - Network connection (ethernet or WiFi)
 - Your AWS gateway running OpenClaw
+- Tailscale on both Pi and AWS (recommended)
+
+## Related Docs
+
+- **[NODE_SETUP.md](NODE_SETUP.md)** — Detailed OpenClaw node connection guide
+- **[DEPLOYMENT_PLAN.md](DEPLOYMENT_PLAN.md)** — Full architecture overview
 
 ## Step 1: Basic Pi Setup
 
@@ -49,12 +55,20 @@ sudo npm install -g openclaw
 
 ## Step 4: Connect to Your Gateway
 
-```bash
-# Set your gateway token
-export OPENCLAW_GATEWAY_TOKEN="<your-token-from-aws-gateway>"
+**See [NODE_SETUP.md](NODE_SETUP.md) for detailed instructions.**
 
-# Test connection
-openclaw node run --host <your-aws-ip> --port 18789 --display-name "pii-chan"
+Quick version (with Tailscale):
+
+```bash
+# Get your AWS gateway's Tailscale IP
+# On AWS: tailscale ip -4
+
+# Get your gateway token
+# On AWS: openclaw config get gateway.auth.token
+
+# On Pi: Connect to gateway
+export OPENCLAW_GATEWAY_TOKEN="<your-token>"
+openclaw node run --host <aws-tailscale-ip> --port 18789 --display-name "pii-chan"
 ```
 
 On your AWS gateway, approve the node:
@@ -64,6 +78,8 @@ openclaw nodes approve <requestId>
 ```
 
 If this works, OpenClaw on Pi is validated! ✅
+
+For systemd service setup and troubleshooting, see [NODE_SETUP.md](NODE_SETUP.md).
 
 ## Step 5: Clone Pii-chan Repo
 
