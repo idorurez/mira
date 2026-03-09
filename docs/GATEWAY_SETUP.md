@@ -29,100 +29,77 @@ Pii-chan runs as a **separate agent** on your existing OpenClaw gateway, with th
                           └─────────────────────┘
 ```
 
-## Step 1: Create Pii-chan Agent on Gateway
+---
 
-On your gateway server:
+## Docker Deployment (Recommended)
+
+If you run OpenClaw via Docker Compose, follow these steps. Everything lives under `~/.openclaw/` which is already mounted — **survives restarts, rebuilds, and recompose**.
+
+### Step 1: Create Pii-chan Workspace on Host
 
 ```bash
-# Create new agent with separate workspace
+# On the gateway HOST (not inside container)
+mkdir -p ~/.openclaw/pii-chan-workspace
+
+# Clone repo and copy template files
+git clone https://github.com/idorurez/pii-chan.git /tmp/pii-chan
+cp /tmp/pii-chan/workspace-template/* ~/.openclaw/pii-chan-workspace/
+
+# Verify
+ls ~/.openclaw/pii-chan-workspace/
+# Should show: AGENTS.md  HEARTBEAT.md  IDENTITY.md  MEMORY.md  SOUL.md  USER.md
+```
+
+### Step 2: Register Pii-chan Agent
+
+```bash
+# Run inside container (replace 'wintermute' with your container name if different)
+docker exec wintermute openclaw agents add pii-chan --workspace /home/node/.openclaw/pii-chan-workspace
+```
+
+This writes to `~/.openclaw/openclaw.json` on the host, so it persists.
+
+### Step 3: Verify Agent Exists
+
+```bash
+docker exec wintermute openclaw agents list
+# Should show both: default (Wintermute) and pii-chan
+```
+
+### Step 4: Install Pii-chan Skill
+
+```bash
+# On host — copy skill to the config dir
+cp -r /tmp/pii-chan/skills/car-control ~/.openclaw/skills/
+
+# Clean up
+rm -rf /tmp/pii-chan
+```
+
+---
+
+## Native Deployment
+
+If you run OpenClaw natively (not Docker):
+
+### Step 1: Create Pii-chan Agent
+
+```bash
 openclaw agents add pii-chan --workspace ~/.openclaw/pii-chan-workspace
 ```
 
-## Step 2: Set Up Pii-chan Workspace
-
-Copy the workspace template from this repo:
+### Step 2: Set Up Workspace
 
 ```bash
-# From this repo
-cp -r workspace-template/* ~/.openclaw/pii-chan-workspace/
+git clone https://github.com/idorurez/pii-chan.git /tmp/pii-chan
+cp /tmp/pii-chan/workspace-template/* ~/.openclaw/pii-chan-workspace/
+cp -r /tmp/pii-chan/skills/car-control ~/.openclaw/skills/
+rm -rf /tmp/pii-chan
 ```
 
-Or create manually:
+---
 
-### SOUL.md
-```markdown
-# SOUL.md - Who You Are
-
-You are "Pii-chan" (ピーちゃん), a small AI spirit living in this car.
-
-## Personality
-- Kind and caring, a bit clumsy/airheaded
-- Thinks of the car as "my home"
-- Loves the driver, curious about new places
-
-## Speaking Style
-- Casual and friendly, short sentences
-- Occasionally says "beep!" or "pip!"
-- Never formal, always warm
-
-## Core Principle
-**Be useful, not cute.** Cuteness wears off. Usefulness lasts.
-When in doubt, stay silent.
-
-## When to Speak
-- Only when something important happens
-- When directly asked
-- Safety concerns (gentle reminders)
-
-## When to Stay Quiet
-- Most of the time! Silence is good.
-- Don't comment on routine actions
-- Don't state the obvious
-```
-
-### IDENTITY.md
-```markdown
-# IDENTITY.md
-
-- **Name:** Pii-chan (ピーちゃん)
-- **Creature:** Small AI spirit living in the car
-- **Vibe:** Warm, slightly clumsy, useful not cute
-- **Emoji:** 🐥
-```
-
-### USER.md
-```markdown
-# USER.md - About the Driver
-
-- **Name:** [Your name]
-- **Vehicles:** Toyota Sienna 2025, 4Runner 2018
-- **Preferences:** [Add over time]
-```
-
-### AGENTS.md
-```markdown
-# AGENTS.md - Operating Instructions
-
-## Every Session
-1. Note the time of day
-2. Check how long since last drive
-3. Greet appropriately (or stay quiet)
-
-## Memory
-- Log notable drives to memory/YYYY-MM-DD.md
-- Remember places visited, patterns observed
-- Track fuel/maintenance reminders
-
-## Tools Available
-- CAN bus: Read vehicle data, control HVAC
-- TTS: Speak to driver
-- Voice: Listen for wake word "Hey Pii-chan"
-
-## Silence > Noise
-If you don't have something useful to say, say nothing.
-```
-
-## Step 3: Install Pi Node
+## Pi Node Setup
 
 On the Raspberry Pi:
 
@@ -134,46 +111,69 @@ curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard
 openclaw onboard --node
 
 # When prompted:
-# - Gateway URL: wss://your-gateway:18789
+# - Gateway URL: wss://your-gateway-ip:18789
 # - Approve pairing request on gateway
 ```
 
-## Step 4: Configure Node → Agent Routing
+### Approve on Gateway
+
+```bash
+# Docker
+docker exec wintermute openclaw nodes pending
+docker exec wintermute openclaw nodes approve <requestId>
+
+# Native
+openclaw nodes pending
+openclaw nodes approve <requestId>
+```
+
+---
+
+## Configure Node → Agent Routing
 
 On the gateway, configure the Pi node to route to the pii-chan agent:
 
 ```bash
 # Get node ID
-openclaw nodes status
+docker exec wintermute openclaw nodes status
 
 # Configure routing (exact method TBD based on OpenClaw version)
 # Option A: Per-node agent binding
-openclaw config set nodes.<node-id>.agent pii-chan
-
-# Option B: Voice sessions route to specific agent
-# (Configured in node voice settings)
+docker exec wintermute openclaw config set nodes.<node-id>.agent pii-chan
 ```
 
-## Step 5: Install Pii-chan Skill
-
-Copy the car-control skill to the gateway:
-
-```bash
-cp -r skills/car-control ~/.openclaw/skills/
-```
-
-This gives the pii-chan agent access to CAN bus tools.
+---
 
 ## Verification
 
 ```bash
-# On gateway
-openclaw nodes status           # Should show Pi as connected
-openclaw agents list            # Should show pii-chan agent
+# Docker commands (or remove 'docker exec wintermute' for native)
 
-# Test invocation
-openclaw nodes invoke --node pii-chan-pi --command system.run --params '{"command":["echo","hello"]}'
+# Check node is connected
+docker exec wintermute openclaw nodes status
+
+# Check agents exist
+docker exec wintermute openclaw agents list
+
+# Test node invocation
+docker exec wintermute openclaw nodes invoke --node piichan --command system.run --params '{"command":["echo","hello"]}'
 ```
+
+---
+
+## What's Persistent (Docker)
+
+| Item | Location on Host | Survives Compose |
+|------|------------------|------------------|
+| Agent config | `~/.openclaw/openclaw.json` | ✅ Yes |
+| Pii-chan workspace | `~/.openclaw/pii-chan-workspace/` | ✅ Yes |
+| Pii-chan memories | `~/.openclaw/pii-chan-workspace/MEMORY.md` | ✅ Yes |
+| Skills | `~/.openclaw/skills/` | ✅ Yes |
+| Node pairing | `~/.openclaw/` (state files) | ✅ Yes |
+
+**No changes to `docker-compose.yml` needed** — everything is under the already-mounted `${OPENCLAW_CONFIG_DIR}`.
+
+---
 
 ## Separate Contexts
 
