@@ -22,8 +22,10 @@ Not another car chatbot. Pii-chan is:
 | Doc | Purpose |
 |-----|---------|
 | [PRODUCT.md](PRODUCT.md) | Full product spec, MVP scope, architecture |
-| [docs/GATEWAY_SETUP.md](docs/GATEWAY_SETUP.md) | Agent setup on your OpenClaw gateway |
-| [docs/DEPLOYMENT_PLAN.md](docs/DEPLOYMENT_PLAN.md) | Technical deployment details |
+| [docs/GATEWAY_SETUP.md](docs/GATEWAY_SETUP.md) | Agent + token setup on your OpenClaw gateway |
+| [docs/PI_SETUP.md](docs/PI_SETUP.md) | Raspberry Pi node setup (Tailscale, systemd, voice) |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues and solutions |
+| [docs/RECONNECTION.md](docs/RECONNECTION.md) | Resilience, auto-recovery, monitoring |
 | [docs/CAN_SNIFFING_GUIDE.md](docs/CAN_SNIFFING_GUIDE.md) | Reverse engineering HVAC CAN |
 | [workspace-template/](workspace-template/) | Ready-to-deploy Pii-chan personality files |
 
@@ -113,14 +115,17 @@ pii-chan/
 
 ## Status
 
-🔄 **Planning complete, entering build phase**
+🔄 **Node connected! Entering voice/display phase**
 
 - [x] Product spec defined
 - [x] Architecture designed
 - [x] Skill structure created
-- [ ] Hardware acquired
-- [ ] OpenClaw node running on Pi
-- [ ] Voice I/O working
+- [x] OpenClaw gateway configured (Docker, Tailscale)
+- [x] Raspberry Pi node connected to gateway
+- [x] Systemd service with auto-reconnect
+- [x] Comprehensive troubleshooting docs
+- [ ] Hardware acquired (Pi 5, CAN HAT, display)
+- [ ] Voice I/O working (Vosk, Piper, OpenWakeWord)
 - [ ] Display + face
 - [ ] CAN reading integrated
 - [ ] Daily driver testing
@@ -128,8 +133,11 @@ pii-chan/
 ## Quick Links
 
 - [Product Spec](PRODUCT.md) — Full MVP definition
-- [Deployment Plan](docs/DEPLOYMENT_PLAN.md) — How it all connects
-- [CAN Sniffing Guide](docs/CAN_SNIFFING_GUIDE.md) — For climate control later
+- [Gateway Setup](docs/GATEWAY_SETUP.md) — Configure your OpenClaw gateway
+- [Pi Setup](docs/PI_SETUP.md) — Get the node running
+- [Troubleshooting](docs/TROUBLESHOOTING.md) — When things go wrong
+- [Reconnection](docs/RECONNECTION.md) — Auto-recovery behavior
+- [CAN Sniffing](docs/CAN_SNIFFING_GUIDE.md) — For climate control later
 
 ## License
 
