@@ -54,7 +54,13 @@ ls ~/.openclaw/pii-chan-workspace/
 
 ```bash
 # Run inside container (replace 'wintermute' with your container name if different)
-docker exec wintermute openclaw agents add pii-chan --workspace /home/node/.openclaw/pii-chan-workspace
+# Note: Docker image uses node directly, not the openclaw CLI wrapper
+docker exec -w /app wintermute node dist/index.js agents add pii-chan --workspace /home/node/.openclaw/pii-chan-workspace
+```
+
+**If you get permission errors:** Fix ownership on host:
+```bash
+sudo chown -R 1000:1000 ~/.openclaw/pii-chan-workspace/
 ```
 
 This writes to `~/.openclaw/openclaw.json` on the host, so it persists.
@@ -62,8 +68,8 @@ This writes to `~/.openclaw/openclaw.json` on the host, so it persists.
 ### Step 3: Verify Agent Exists
 
 ```bash
-docker exec wintermute openclaw agents list
-# Should show both: default (Wintermute) and pii-chan
+docker exec -w /app wintermute node dist/index.js agents list
+# Should show both: main (default) and pii-chan
 ```
 
 ### Step 4: Install Pii-chan Skill
@@ -119,8 +125,8 @@ openclaw onboard --node
 
 ```bash
 # Docker
-docker exec wintermute openclaw nodes pending
-docker exec wintermute openclaw nodes approve <requestId>
+docker exec -w /app wintermute node dist/index.js nodes pending
+docker exec -w /app wintermute node dist/index.js nodes approve <requestId>
 
 # Native
 openclaw nodes pending
@@ -135,11 +141,11 @@ On the gateway, configure the Pi node to route to the pii-chan agent:
 
 ```bash
 # Get node ID
-docker exec wintermute openclaw nodes status
+docker exec -w /app wintermute node dist/index.js nodes status
 
 # Configure routing (exact method TBD based on OpenClaw version)
 # Option A: Per-node agent binding
-docker exec wintermute openclaw config set nodes.<node-id>.agent pii-chan
+docker exec -w /app wintermute node dist/index.js config set nodes.<node-id>.agent pii-chan
 ```
 
 ---
@@ -147,16 +153,16 @@ docker exec wintermute openclaw config set nodes.<node-id>.agent pii-chan
 ## Verification
 
 ```bash
-# Docker commands (or remove 'docker exec wintermute' for native)
+# Docker commands (replace with just 'openclaw ...' for native installs)
 
 # Check node is connected
-docker exec wintermute openclaw nodes status
+docker exec -w /app wintermute node dist/index.js nodes status
 
 # Check agents exist
-docker exec wintermute openclaw agents list
+docker exec -w /app wintermute node dist/index.js agents list
 
 # Test node invocation
-docker exec wintermute openclaw nodes invoke --node piichan --command system.run --params '{"command":["echo","hello"]}'
+docker exec -w /app wintermute node dist/index.js nodes invoke --node piichan --command system.run --params '{"command":["echo","hello"]}'
 ```
 
 ---

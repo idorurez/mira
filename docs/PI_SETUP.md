@@ -56,7 +56,27 @@ uname -m  # should show "aarch64"
 ```bash
 # Install OpenClaw
 curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard
+```
 
+### Fix PATH (if `openclaw` command not found)
+
+The npm global bin directory may not be in your PATH:
+
+```bash
+# Check where it installed
+npm list -g openclaw
+
+# Add npm global bin to PATH
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify
+which openclaw  # should show ~/.npm-global/bin/openclaw
+```
+
+### Configure as Node
+
+```bash
 # Configure as a node (not a gateway)
 openclaw onboard --node
 ```
