@@ -319,6 +319,52 @@ candump can0
 
 ---
 
+## Configure Exec Approvals
+
+Remote commands from the gateway require an allowlist on the Pi. Edit `~/.openclaw/exec-approvals.json`:
+
+```json
+{
+  "version": 1,
+  "agents": {
+    "*": {
+      "allowlist": [
+        {"pattern": "/usr/bin/echo"},
+        {"pattern": "/usr/bin/cat"},
+        {"pattern": "/usr/bin/ls"},
+        {"pattern": "/usr/bin/uname"},
+        {"pattern": "/usr/bin/whoami"},
+        {"pattern": "/usr/bin/hostname"},
+        {"pattern": "/usr/bin/date"},
+        {"pattern": "/usr/bin/uptime"},
+        {"pattern": "/usr/bin/lsusb"},
+        {"pattern": "/usr/bin/file"},
+        {"pattern": "/usr/bin/head"},
+        {"pattern": "/usr/bin/tail"},
+        {"pattern": "/usr/bin/wc"},
+        {"pattern": "/usr/bin/grep"},
+        {"pattern": "/usr/bin/which"},
+        {"pattern": "/usr/bin/pip3"},
+        {"pattern": "/usr/bin/git"},
+        {"pattern": "/usr/bin/ip"},
+        {"pattern": "/usr/bin/curl"},
+        {"pattern": "/usr/bin/python3"},
+        {"pattern": "/usr/bin/arecord"},
+        {"pattern": "/usr/bin/aplay"},
+        {"pattern": "/usr/bin/candump"},
+        {"pattern": "/usr/bin/cansend"},
+        {"pattern": "/usr/sbin/alsactl"},
+        {"pattern": "/home/piichan/.local/bin/*"}
+      ]
+    }
+  }
+}
+```
+
+The wildcard `*` allows any command in that directory (useful for pip-installed tools like piper).
+
+---
+
 ## Validation Checklist
 
 ```bash
