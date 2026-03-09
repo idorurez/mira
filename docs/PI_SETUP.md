@@ -232,6 +232,17 @@ OpenClaw uses a cryptographic identity system:
 
 ## Phase 6: Voice Stack
 
+### Quick Reference - Activating the Environment
+
+**Every time you SSH in and want to work with voice tools:**
+
+```bash
+cd ~/pii-chan
+source venv/bin/activate
+```
+
+Your prompt will change to `(venv) piichan@piichan:~/pii-chan $`
+
 ### Create Python Virtual Environment
 
 Raspberry Pi OS requires a venv for pip packages:
@@ -242,12 +253,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install all voice dependencies
-pip install piper-tts vosk openwakeword
-```
-
-**Always activate the venv before running voice scripts:**
-```bash
-source ~/pii-chan/venv/bin/activate
+pip install piper-tts vosk openwakeword sounddevice scipy pathvalidate
 ```
 
 ### Download Vosk Model (Speech-to-Text)
@@ -450,6 +456,67 @@ See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues:
 - Pairing failures
 - Connection drops
 - Identity mismatches
+
+---
+
+## Quick Testing Reference
+
+### SSH In and Activate Environment
+
+```bash
+ssh piichan@piichan.local
+cd ~/pii-chan
+source venv/bin/activate
+```
+
+### Test Wake Word Detection
+
+```bash
+python test_wakeword.py
+# Say "hey jarvis" to test
+```
+
+### Test TTS
+
+```bash
+echo "Hello!" | piper --model voices/en_US-lessac-medium.onnx --output_file /tmp/test.wav
+aplay /tmp/test.wav
+```
+
+### Test STT
+
+```bash
+arecord -D plughw:2,0 -f cd -d 3 test.wav
+python test_vosk.py
+```
+
+### Test Gateway TTS (speak remotely)
+
+From gateway:
+```bash
+docker exec wintermute openclaw nodes invoke --node piichan --command system.run --params '{"command":["/home/piichan/pii-chan/speak.sh","Hello from the gateway!"]}'
+```
+
+---
+
+## Using Claude Code on Pi
+
+Claude Code can be installed for local AI-assisted development:
+
+```bash
+# Install
+npm install -g @anthropic-ai/claude-code
+
+# Run (requires API key or Max subscription)
+cd ~/pii-chan
+source venv/bin/activate  # if working on voice stuff
+claude
+```
+
+Inside Claude Code:
+- Type `/model` to see available models
+- Use `claude --model claude-sonnet-4-5-20250514` to specify model
+- It has access to the pii-chan repo for context
 
 ---
 
