@@ -78,11 +78,38 @@ docker exec wintermute cat /home/node/.openclaw/devices/pending.json
 # List connected nodes
 docker exec wintermute openclaw nodes status
 
-# Invoke command on node
+# Invoke command on node (use full path)
 docker exec wintermute openclaw nodes invoke \
   --node piichan \
   --command system.run \
-  --params '{"command":["echo","hello"]}'
+  --params '{"command":["/usr/bin/echo","hello"]}'
+```
+
+### Exec Approvals (Allowlist)
+
+Commands must be allowlisted on the Pi before they can be invoked remotely.
+
+```bash
+# Add command to allowlist (from gateway)
+docker exec wintermute openclaw approvals allowlist add --node piichan "/usr/bin/uname"
+
+# View current approvals
+docker exec wintermute openclaw approvals get --node piichan
+```
+
+Or edit directly on Pi (`~/.openclaw/exec-approvals.json`):
+```json
+{
+  "agents": {
+    "*": {
+      "allowlist": [
+        {"pattern": "/usr/bin/echo"},
+        {"pattern": "/usr/bin/python3"},
+        {"pattern": "/usr/bin/candump"}
+      ]
+    }
+  }
+}
 ```
 
 ### Config Management
