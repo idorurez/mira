@@ -252,29 +252,41 @@ The gateway will issue a token on the next successful connection.
 unauthorized: gateway token mismatch (provide gateway auth token)
 ```
 
-**Cause:** The CLI can't authenticate to the gateway. This happens when:
-- `gateway.remote.token` isn't set in the config
-- Or the token doesn't match `gateway.auth.token`
+**Cause:** Token mismatch between different sources. The gateway can get its token from:
+1. `.env` file (`OPENCLAW_GATEWAY_TOKEN=...`)
+2. `openclaw.json` (`gateway.auth.token`)
+3. Environment variable passed to container
 
-**Current workaround:** Use manual file editing (see above) or set the token in config:
+If these don't match, CLI commands fail.
+
+**Diagnose:**
 
 ```bash
-# Inside container, check config
-docker exec wintermute cat /home/node/.openclaw/openclaw.json | grep -A5 "gateway"
+# Check what's in .env
+cat ~/openclaw/.env | grep GATEWAY_TOKEN
+
+# Check what's in config
+docker exec wintermute cat /home/node/.openclaw/openclaw.json | grep -A3 '"auth"'
+
+# Check what the container actually has
+docker exec wintermute env | grep GATEWAY_TOKEN
 ```
 
-The config should have:
-```json
-{
-  "gateway": {
-    "auth": {
-      "token": "YOUR_TOKEN"
-    },
-    "remote": {
-      "token": "YOUR_TOKEN"
-    }
-  }
-}
+**Fix:** Make them all match:
+
+```bash
+# Update .env to match your chosen token
+sed -i 's/OPENCLAW_GATEWAY_TOKEN=.*/OPENCLAW_GATEWAY_TOKEN=YOUR_TOKEN_HERE/' ~/openclaw/.env
+
+# IMPORTANT: Must recreate container, not just restart
+cd ~/openclaw && docker compose down && docker compose up -d
+
+# Verify
+docker exec wintermute env | grep GATEWAY_TOKEN
+docker exec -w /app wintermute node dist/index.js nodes status
+```
+
+**Note:** `docker compose restart` does NOT reload .env changes. You must `down && up`.
 ```
 
 ### "Control UI requires device identity"
