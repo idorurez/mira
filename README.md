@@ -24,6 +24,7 @@ Not another car chatbot. Pii-chan is:
 | [PRODUCT.md](PRODUCT.md) | Full product spec, MVP scope, architecture |
 | [docs/GATEWAY_SETUP.md](docs/GATEWAY_SETUP.md) | Agent + token setup on your OpenClaw gateway |
 | [docs/PI_SETUP.md](docs/PI_SETUP.md) | Raspberry Pi node setup (Tailscale, systemd, voice) |
+| [docs/COMMANDS.md](docs/COMMANDS.md) | All commands reference (gateway, Pi, CAN, voice) |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues and solutions |
 | [docs/RECONNECTION.md](docs/RECONNECTION.md) | Resilience, auto-recovery, monitoring |
 | [docs/CAN_SNIFFING_GUIDE.md](docs/CAN_SNIFFING_GUIDE.md) | Reverse engineering HVAC CAN |
@@ -135,6 +136,7 @@ pii-chan/
 - [Product Spec](PRODUCT.md) — Full MVP definition
 - [Gateway Setup](docs/GATEWAY_SETUP.md) — Configure your OpenClaw gateway
 - [Pi Setup](docs/PI_SETUP.md) — Get the node running
+- [Commands Reference](docs/COMMANDS.md) — All commands in one place
 - [Troubleshooting](docs/TROUBLESHOOTING.md) — When things go wrong
 - [Reconnection](docs/RECONNECTION.md) — Auto-recovery behavior
 - [CAN Sniffing](docs/CAN_SNIFFING_GUIDE.md) — For climate control later
