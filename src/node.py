@@ -263,7 +263,7 @@ class OpenClawNode:
 
     # ---- Public API ----
 
-    async def send_voice_transcript(self, text: str):
+    async def send_voice_transcript(self, text: str, agent: str = "agent:pii-chan:main"):
         """Send a voice transcript to the gateway for Claude to respond to."""
         if not self._connected:
             print("[node] Not connected to gateway")
@@ -276,7 +276,10 @@ class OpenClawNode:
             "method": "node.event",
             "params": {
                 "event": "voice.transcript",
-                "payload": {"text": text},
+                "payload": {
+                    "text": text,
+                    "sessionKey": agent,
+                },
             },
         }
         await self._ws.send(json.dumps(msg))
