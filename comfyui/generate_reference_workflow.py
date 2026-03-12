@@ -25,6 +25,7 @@ GEN_HEIGHT = 1024
 # ═══════════════════════════════════════════════════════════════════════
 # STYLE PROMPT - Customize for your character
 # ═══════════════════════════════════════════════════════════════════════
+# Artistic style + character design
 STYLE_PROMPT = """\
 anime, cyberpunk, cyborg, exosuit, armor, 1girl, solo, 
 looking straight at viewer, closed mouth, white hair, bob cut, 
@@ -34,7 +35,11 @@ anime artwork retro cyberpunk anime art by Tsubasa Nakai,
 Painting, Hyperrealism, detailed, 80's inspired, synthwave, neon, vibrant, 
 retro futurism, anime style, key visual, studio anime, highly detailed, 
 big expressive eyes, black background, 
-front view, centered, full body, standing pose, arms at sides\
+full body, front view, centered, \
+symmetrical a-pose, arms slightly raised at 45 degrees from body, \
+standing straight with relaxed posture, \
+palms facing inward, fingers together, \
+even flat lighting, character reference sheet style\
 """
 
 # For face-only (alternative prompt)
@@ -46,6 +51,16 @@ anime style, highly detailed, big expressive eyes,
 black background, front view, centered, 
 portrait, face only, head shot, shoulders up, 
 no hands visible, close up face\
+"""
+
+# Negative prompt to avoid problematic poses
+NEGATIVE_PROMPT = """\
+dynamic pose, action pose, twisted body, angled view, 
+profile view, side view, 3/4 view, perspective, asymmetrical pose,
+hands in pockets, crossed arms, holding object, pointing,
+complex background, detailed background, gradient background,
+motion blur, foreshortening, tilted head, bent arms,
+looking away, looking to the side\
 """
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -349,44 +364,62 @@ out_links(16).append(l_img_save_crop)
 
 NOTE_TEXT = f"""=== PII-CHAN REFERENCE GENERATOR ===
 
-This workflow generates a reference character and saves:
-1. FULL IMAGE - for Inochi2D rigging (full body)
+This workflow generates a reference character in A-POSE for Inochi2D rigging.
+
+OUTPUTS:
+1. FULL IMAGE - for Inochi2D rigging (full body, symmetrical A-pose)
 2. CROPPED HEAD - for face-only display
+
+POSE DETAILS:
+- Symmetrical A-pose (arms at ~45° from body)
+- Front view, standing straight
+- Optimized for layer extraction and rigging
 
 CROP SETTINGS (adjust in ImageCrop node):
   X: {CROP_X}  Y: {CROP_Y}
   Width: {CROP_WIDTH}  Height: {CROP_HEIGHT}
 
-For centered character in 1024x1024:
-- Head at top center: X=256, Y=0, 512x512
-- Upper body: X=128, Y=0, 768x768
-- Just face: X=320, Y=64, 384x384
-
 WORKFLOW:
-1. Edit prompt for your character design
-2. Generate (randomize seed to explore)
-3. Find a good one? Set seed to "fixed"
-4. Adjust crop position if needed
-5. Use full image for Inochi2D rigging
-6. Use cropped head as display reference
+1. Generate (randomize seed to explore)
+2. Find a good symmetrical pose? Set seed to "fixed"
+3. Adjust crop position if needed
+4. Use full image for layer extraction → Inochi2D rigging
+5. Use cropped head as display reference
 
-OUTPUTS:
+FILES:
 - pii-chan_full_*.png   → Full body for rigging
 - pii-chan_head_*.png   → Cropped head for face display
 """
 
 add({
     "id": 18, "type": "Note",
-    "pos": [-600, 300], "size": [500, 400],
+    "pos": [-600, 300], "size": [500, 380],
     "properties": {},
     "widgets_values": [NOTE_TEXT],
     "title": "Instructions"
 })
 
-# Face-only prompt note
+# Negative prompt note (for reference - Flux doesn't use negative conditioning)
+NEGATIVE_NOTE = f"""THINGS TO AVOID (edit prompt if these appear):
+
+{NEGATIVE_PROMPT}
+
+Note: Flux doesn't use negative prompts like SDXL.
+If you get bad poses, strengthen the positive pose keywords
+or regenerate with a different seed."""
+
 add({
     "id": 19, "type": "Note",
-    "pos": [150, -550], "size": [450, 180],
+    "pos": [150, -580], "size": [450, 200],
+    "properties": {},
+    "widgets_values": [NEGATIVE_NOTE],
+    "title": "Pose Issues? Check These"
+})
+
+# Face-only prompt note
+add({
+    "id": 20, "type": "Note",
+    "pos": [620, -580], "size": [450, 200],
     "properties": {},
     "widgets_values": [f"ALTERNATIVE FACE-ONLY PROMPT:\n\n{FACE_ONLY_PROMPT}"],
     "title": "Face-Only Prompt (copy if needed)"

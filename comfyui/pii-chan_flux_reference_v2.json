@@ -1,5 +1,5 @@
 {
-  "last_node_id": 19,
+  "last_node_id": 20,
   "last_link_id": 18,
   "nodes": [
     {
@@ -159,7 +159,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "anime, cyberpunk, cyborg, exosuit, armor, 1girl, solo, \nlooking straight at viewer, closed mouth, white hair, bob cut, \nglowing, robot, glowing eyes, futuristic, sci-fi, \nblush, short hair, purple eyes, \nanime artwork retro cyberpunk anime art by Tsubasa Nakai, \nPainting, Hyperrealism, detailed, 80's inspired, synthwave, neon, vibrant, \nretro futurism, anime style, key visual, studio anime, highly detailed, \nbig expressive eyes, black background, \nfront view, centered, full body, standing pose, arms at sides"
+        "anime, cyberpunk, cyborg, exosuit, armor, 1girl, solo, \nlooking straight at viewer, closed mouth, white hair, bob cut, \nglowing, robot, glowing eyes, futuristic, sci-fi, \nblush, short hair, purple eyes, \nanime artwork retro cyberpunk anime art by Tsubasa Nakai, \nPainting, Hyperrealism, detailed, 80's inspired, synthwave, neon, vibrant, \nretro futurism, anime style, key visual, studio anime, highly detailed, \nbig expressive eyes, black background, \nfull body, front view, centered, symmetrical a-pose, arms slightly raised at 45 degrees from body, standing straight with relaxed posture, palms facing inward, fingers together, even flat lighting, character reference sheet style"
       ],
       "inputs": [
         {
@@ -622,11 +622,11 @@
       ],
       "size": [
         500,
-        400
+        380
       ],
       "properties": {},
       "widgets_values": [
-        "=== PII-CHAN REFERENCE GENERATOR ===\n\nThis workflow generates a reference character and saves:\n1. FULL IMAGE - for Inochi2D rigging (full body)\n2. CROPPED HEAD - for face-only display\n\nCROP SETTINGS (adjust in ImageCrop node):\n  X: 256  Y: 0\n  Width: 512  Height: 512\n\nFor centered character in 1024x1024:\n- Head at top center: X=256, Y=0, 512x512\n- Upper body: X=128, Y=0, 768x768\n- Just face: X=320, Y=64, 384x384\n\nWORKFLOW:\n1. Edit prompt for your character design\n2. Generate (randomize seed to explore)\n3. Find a good one? Set seed to \"fixed\"\n4. Adjust crop position if needed\n5. Use full image for Inochi2D rigging\n6. Use cropped head as display reference\n\nOUTPUTS:\n- pii-chan_full_*.png   → Full body for rigging\n- pii-chan_head_*.png   → Cropped head for face display\n"
+        "=== PII-CHAN REFERENCE GENERATOR ===\n\nThis workflow generates a reference character in A-POSE for Inochi2D rigging.\n\nOUTPUTS:\n1. FULL IMAGE - for Inochi2D rigging (full body, symmetrical A-pose)\n2. CROPPED HEAD - for face-only display\n\nPOSE DETAILS:\n- Symmetrical A-pose (arms at ~45° from body)\n- Front view, standing straight\n- Optimized for layer extraction and rigging\n\nCROP SETTINGS (adjust in ImageCrop node):\n  X: 256  Y: 0\n  Width: 512  Height: 512\n\nWORKFLOW:\n1. Generate (randomize seed to explore)\n2. Find a good symmetrical pose? Set seed to \"fixed\"\n3. Adjust crop position if needed\n4. Use full image for layer extraction → Inochi2D rigging\n5. Use cropped head as display reference\n\nFILES:\n- pii-chan_full_*.png   → Full body for rigging\n- pii-chan_head_*.png   → Cropped head for face display\n"
       ],
       "title": "Instructions"
     },
@@ -635,11 +635,28 @@
       "type": "Note",
       "pos": [
         150,
-        -550
+        -580
       ],
       "size": [
         450,
-        180
+        200
+      ],
+      "properties": {},
+      "widgets_values": [
+        "THINGS TO AVOID (edit prompt if these appear):\n\ndynamic pose, action pose, twisted body, angled view, \nprofile view, side view, 3/4 view, perspective, asymmetrical pose,\nhands in pockets, crossed arms, holding object, pointing,\ncomplex background, detailed background, gradient background,\nmotion blur, foreshortening, tilted head, bent arms,\nlooking away, looking to the side\n\nNote: Flux doesn't use negative prompts like SDXL.\nIf you get bad poses, strengthen the positive pose keywords\nor regenerate with a different seed."
+      ],
+      "title": "Pose Issues? Check These"
+    },
+    {
+      "id": 20,
+      "type": "Note",
+      "pos": [
+        620,
+        -580
+      ],
+      "size": [
+        450,
+        200
       ],
       "properties": {},
       "widgets_values": [
