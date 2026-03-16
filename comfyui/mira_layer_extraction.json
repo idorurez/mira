@@ -1,937 +1,3679 @@
 {
-  "last_node_id": 101,
-  "last_link_id": 45,
+  "id": "9d31eb95-d18c-40af-8355-61a6de293770",
+  "revision": 0,
+  "last_node_id": 220,
+  "last_link_id": 88,
   "nodes": [
+    {
+      "id": 10,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        -200
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            2
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "2a. Segment Hair",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 11,
+      "type": "AILab_MaskEnhancer",
+      "pos": [
+        370,
+        -200
+      ],
+      "size": [
+        315,
+        200
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Mask",
+          "name": "mask",
+          "type": "MASK",
+          "link": 2
+        },
+        {
+          "localized_name": "Sensitivity",
+          "name": "sensitivity",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "sensitivity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Smooth",
+          "name": "smooth",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "smooth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Fill Holes",
+          "name": "fill_holes",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "fill_holes"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            4
+          ]
+        }
+      ],
+      "title": "2b. Grow Hair Mask (+5px)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "AILab_MaskEnhancer"
+      },
+      "widgets_values": [
+        1,
+        3,
+        5,
+        2,
+        true,
+        false
+      ],
+      "color": "#2e3e57",
+      "bgcolor": "#4b5b73"
+    },
+    {
+      "id": 40,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        1100
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 16
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            46
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            77
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "4. face_skin (from hair-removed)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 41,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        1100
+      ],
+      "size": [
+        300,
+        270
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 48
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "4. Save: face_skin",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_face_skin"
+      ]
+    },
+    {
+      "id": 50,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        1500
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 18
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            49
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            79
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. eye_left (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 51,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        1500
+      ],
+      "size": [
+        300,
+        270
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 51
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: eye_left",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_eye_left"
+      ]
+    },
+    {
+      "id": 60,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        1800
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            52
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            81
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. eye_right (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 61,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        1800
+      ],
+      "size": [
+        300,
+        270
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 54
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: eye_right",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_eye_right"
+      ]
+    },
+    {
+      "id": 70,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        2100
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 22
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            55
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            83
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. mouth (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 71,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        2100
+      ],
+      "size": [
+        300,
+        250
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 57
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: mouth",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_mouth"
+      ]
+    },
+    {
+      "id": 80,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        2400
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 24
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            58
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            85
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. nose (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 81,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        2400
+      ],
+      "size": [
+        300,
+        250
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 60
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: nose",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_nose"
+      ]
+    },
+    {
+      "id": 90,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        2700
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 26
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            61
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            87
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. hair (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 91,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        2700
+      ],
+      "size": [
+        300,
+        250
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 63
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: hair",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_hair"
+      ]
+    },
+    {
+      "id": 100,
+      "type": "FaceSegment",
+      "pos": [
+        0,
+        3000
+      ],
+      "size": [
+        315,
+        580
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "Images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 28
+        },
+        {
+          "localized_name": "Skin",
+          "name": "Skin",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Skin"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Nose",
+          "name": "Nose",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Nose"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Eyeglasses",
+          "name": "Eyeglasses",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Eyeglasses"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eye",
+          "name": "Left-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eye",
+          "name": "Right-eye",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eye"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Eyebrow",
+          "name": "Left-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Eyebrow",
+          "name": "Right-eyebrow",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-eyebrow"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Left Ear",
+          "name": "Left-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Left-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Right Ear",
+          "name": "Right-ear",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Right-ear"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mouth",
+          "name": "Mouth",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Mouth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Upper Lip",
+          "name": "Upper-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Upper-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Lower Lip",
+          "name": "Lower-lip",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Lower-lip"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Hair",
+          "name": "Hair",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Hair"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Earring",
+          "name": "Earring",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Earring"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Neck",
+          "name": "Neck",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "Neck"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Processing Resolution",
+          "name": "process_res",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "process_res"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Blur",
+          "name": "mask_blur",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_blur"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Mask Offset",
+          "name": "mask_offset",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "mask_offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Invert Output",
+          "name": "invert_output",
+          "shape": 7,
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "invert_output"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background",
+          "name": "background",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "background"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Background Color",
+          "name": "background_color",
+          "shape": 7,
+          "type": "COLORCODE",
+          "widget": {
+            "name": "background_color"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            64
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            75
+          ]
+        },
+        {
+          "localized_name": "MASK IMAGE",
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": []
+        }
+      ],
+      "title": "5. ears (from original)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "FaceSegment"
+      },
+      "widgets_values": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        512,
+        0,
+        0,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 101,
+      "type": "SaveImage",
+      "pos": [
+        670,
+        3000
+      ],
+      "size": [
+        300,
+        250
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 66
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "5. Save: ears",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_ears"
+      ]
+    },
+    {
+      "id": 100,
+      "type": "Note",
+      "pos": [
+        -500,
+        450
+      ],
+      "size": [
+        450,
+        750
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Instructions",
+      "properties": {},
+      "widgets_values": [
+        "=== LAYER EXTRACTION FOR INOCHI2D ===\n\nMulti-stage pipeline using FaceSegment + LaMa + manual eyebrow masks.\n\nPIPELINE:\n  Stage 1: Load reference image\n  Stage 2: Hair removal (FaceSegment -> MaskEnhancer -> LaMa)\n  Stage 3: MANUAL eyebrow masks applied to hair-removed image\n  Stage 4: Auto skin from hair-removed image\n  Stage 5: Auto eyes, mouth, nose, hair, ears from original\n\nEYEBROW WORKFLOW:\n  1. Run the workflow once to get mira_debug_hair_removed.png\n  2. Open that image in Photoshop/GIMP\n  3. Paint white-on-black masks for each eyebrow\n  4. Save as:\n     - mira_mask_eyebrow_left.png\n     - mira_mask_eyebrow_right.png\n  5. Place in ComfyUI input/ folder\n  6. Re-run workflow - eyebrows will be cut from hair-removed image\n\nWHY MANUAL EYEBROWS:\n  FaceSegment (trained on real photos) confuses anime face markings\n  with eyebrows. Manual masking on the hair-removed image is fast\n  and gives clean results.\n\nOUTPUT FILES:\n  mira_layer_eyebrow_left.png   (manual mask on hair-removed)\n  mira_layer_eyebrow_right.png  (manual mask on hair-removed)\n  mira_layer_face_skin.png      (auto from hair-removed)\n  mira_layer_eye_left.png       (auto from original)\n  mira_layer_eye_right.png      (auto from original)\n  mira_layer_mouth.png          (auto from original)\n  mira_layer_nose.png           (auto from original)\n  mira_layer_hair.png           (auto from original)\n  mira_layer_ears.png           (auto from original)\n  mira_debug_hair_removed.png   (reference for manual masking)\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 204,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        1100
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 46
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 78
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            48
+          ]
+        }
+      ],
+      "title": "Add Alpha: face_skin",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 205,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        1500
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 49
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 80
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            51
+          ]
+        }
+      ],
+      "title": "Add Alpha: eye_left",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 206,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        1800
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 52
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 82
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            54
+          ]
+        }
+      ],
+      "title": "Add Alpha: eye_right",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 207,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        2100
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 55
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 84
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            57
+          ]
+        }
+      ],
+      "title": "Add Alpha: mouth",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 208,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        2400
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 58
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 86
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            60
+          ]
+        }
+      ],
+      "title": "Add Alpha: nose",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 209,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        2700
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 61
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 88
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            63
+          ]
+        }
+      ],
+      "title": "Add Alpha: hair",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 210,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        370,
+        3000
+      ],
+      "size": [
+        250,
+        80
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 64
+        },
+        {
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "MASK",
+          "link": 76
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            66
+          ]
+        }
+      ],
+      "title": "Add Alpha: ears",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
     {
       "id": 1,
       "type": "LoadImage",
       "pos": [
-        -400,
+        -500,
         0
       ],
       "size": [
         315,
         400
       ],
-      "properties": {},
-      "widgets_values": [
-        "mira_reference.png",
-        "image"
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
       ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             1,
             3,
-            6,
-            8,
-            11,
-            13,
-            16,
             18,
-            21,
-            23,
-            26,
-            28,
-            31,
-            33,
-            36,
-            38,
-            41,
-            43
-          ],
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [],
-          "slot_index": 1
-        }
-      ],
-      "title": "Load Reference Character"
-    },
-    {
-      "id": 2,
-      "type": "SAMModelLoader",
-      "pos": [
-        -400,
-        450
-      ],
-      "size": [
-        315,
-        58
-      ],
-      "properties": {},
-      "widgets_values": [
-        "sam_vit_h_4b8939.pth",
-        "cuda"
-      ],
-      "outputs": [
-        {
-          "name": "SAM_MODEL",
-          "type": "SAM_MODEL",
-          "links": [
-            2,
-            7,
-            12,
-            17,
+            20,
             22,
-            27,
-            32,
-            37,
-            42
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Load SAM Model"
-    },
-    {
-      "id": 10,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        -100
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "358,358",
-        "512,358;204,358",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 2
+            24,
+            26,
+            28
+          ]
         },
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 1
-        }
-      ],
-      "outputs": [
-        {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
-          "links": [
-            4
-          ],
-          "slot_index": 0
+          "slot_index": 1,
+          "links": []
         }
       ],
-      "title": "Segment: eye_left"
+      "title": "1. Load Reference Character",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "mira_neutral_00002_.png",
+        "image"
+      ]
     },
     {
       "id": 12,
-      "type": "JoinImageWithAlpha",
+      "type": "AILab_LamaRemover",
       "pos": [
-        400,
-        -100
+        740,
+        -200
       ],
       "size": [
-        200,
-        50
+        315,
+        150
       ],
-      "properties": {},
-      "widgets_values": [],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
       "inputs": [
         {
-          "name": "image",
+          "localized_name": "Images",
+          "name": "images",
           "type": "IMAGE",
           "link": 3
         },
         {
-          "name": "alpha",
+          "localized_name": "Masks",
+          "name": "masks",
           "type": "MASK",
           "link": 4
+        },
+        {
+          "localized_name": "Removal Strength",
+          "name": "removal_strength",
+          "type": "INT",
+          "widget": {
+            "name": "removal_strength"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "Edge Smoothness",
+          "name": "edge_smoothness",
+          "type": "INT",
+          "widget": {
+            "name": "edge_smoothness"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
-          "name": "IMAGE",
+          "localized_name": "images",
+          "name": "images",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
-            5
-          ],
-          "slot_index": 0
+            5,
+            16,
+            67,
+            69
+          ]
         }
       ],
-      "title": "Add Alpha: eye_left"
+      "title": "2c. Remove Hair (LaMa)",
+      "properties": {
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.0.0",
+        "Node name for S&R": "AILab_LamaRemover"
+      },
+      "widgets_values": [
+        21,
+        10
+      ],
+      "color": "#2e3e57",
+      "bgcolor": "#4b5b73"
     },
     {
       "id": 13,
       "type": "SaveImage",
       "pos": [
-        650,
-        -150
+        1110,
+        -200
       ],
       "size": [
-        300,
-        250
+        376.3375,
+        270
       ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_eye_left"
-      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
       "inputs": [
         {
+          "localized_name": "images",
           "name": "images",
           "type": "IMAGE",
           "link": 5
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
         }
       ],
-      "title": "Save: eye_left"
+      "outputs": [],
+      "title": "2d. Save Hair-Removed (use for eyebrow masking)",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_debug_hair_removed"
+      ]
     },
     {
       "id": 20,
-      "type": "SAMPredictor",
+      "type": "LoadImage",
       "pos": [
-        0,
-        100
+        8.38229805577246,
+        335.815292115205
       ],
       "size": [
-        350,
-        130
+        315,
+        314
       ],
-      "properties": {},
-      "widgets_values": [
-        "665,358",
-        "512,358;819,358",
-        0.5
-      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
       "inputs": [
         {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 7
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
         },
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 6
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            9
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Segment: eye_right"
-    },
-    {
-      "id": 22,
-      "type": "JoinImageWithAlpha",
-      "pos": [
-        400,
-        100
-      ],
-      "size": [
-        200,
-        50
-      ],
-      "properties": {},
-      "widgets_values": [],
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 8
-        },
-        {
-          "name": "alpha",
-          "type": "MASK",
-          "link": 9
-        }
-      ],
-      "outputs": [
-        {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [
-            10
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Add Alpha: eye_right"
-    },
-    {
-      "id": 23,
-      "type": "SaveImage",
-      "pos": [
-        650,
-        50
-      ],
-      "size": [
-        300,
-        250
-      ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_eye_right"
-      ],
-      "inputs": [
+          "slot_index": 0,
+          "links": []
+        },
         {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 10
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            71
+          ]
         }
       ],
-      "title": "Save: eye_right"
+      "title": "3. Load Mask: eyebrow_left (manual)",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "LoadImage",
+        "image": "clipspace/clipspace-painted-masked-1773599985584.png [input]"
+      },
+      "widgets_values": [
+        "clipspace/clipspace-painted-masked-1773599985584.png [input]",
+        "image"
+      ]
     },
     {
       "id": 30,
-      "type": "SAMPredictor",
+      "type": "LoadImage",
       "pos": [
-        0,
-        300
+        16.002494598856977,
+        699.5317379834341
       ],
       "size": [
-        350,
-        130
+        315,
+        314
       ],
-      "properties": {},
-      "widgets_values": [
-        "358,307",
-        "358,358;512,307",
-        0.5
-      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
       "inputs": [
         {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 12
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
         },
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 11
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            73
+          ]
+        }
+      ],
+      "title": "3. Load Mask: eyebrow_right (manual)",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "LoadImage",
+        "image": "clipspace/clipspace-painted-masked-1773600002147.png [input]"
+      },
+      "widgets_values": [
+        "clipspace/clipspace-painted-masked-1773600002147.png [input]",
+        "image"
+      ]
+    },
+    {
+      "id": 213,
+      "type": "InvertMask",
+      "pos": [
+        440.86780527062456,
+        704.5715514634036
+      ],
+      "size": [
+        140,
+        26
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "mask",
+          "name": "mask",
+          "type": "MASK",
+          "link": 73
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": [
-            14
-          ],
-          "slot_index": 0
+            74
+          ]
         }
       ],
-      "title": "Segment: eyebrow_left"
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "InvertMask"
+      },
+      "widgets_values": []
     },
     {
-      "id": 32,
+      "id": 31,
       "type": "JoinImageWithAlpha",
       "pos": [
-        400,
-        300
+        419.65999261307434,
+        767.7406066101258
       ],
       "size": [
-        200,
-        50
+        250,
+        80
       ],
-      "properties": {},
-      "widgets_values": [],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
       "inputs": [
         {
+          "localized_name": "image",
           "name": "image",
           "type": "IMAGE",
-          "link": 13
+          "link": 69
         },
         {
+          "localized_name": "alpha",
           "name": "alpha",
           "type": "MASK",
-          "link": 14
+          "link": 74
         }
       ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
-            15
-          ],
-          "slot_index": 0
+            41
+          ]
         }
       ],
-      "title": "Add Alpha: eyebrow_left"
+      "title": "3. Apply Mask: eyebrow_right",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
     },
     {
-      "id": 33,
-      "type": "SaveImage",
+      "id": 212,
+      "type": "InvertMask",
       "pos": [
-        650,
-        250
+        451.65035342629574,
+        416.1771799366233
       ],
       "size": [
-        300,
-        250
+        140,
+        26
       ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_eyebrow_left"
-      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
       "inputs": [
         {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 15
-        }
-      ],
-      "title": "Save: eyebrow_left"
-    },
-    {
-      "id": 40,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        500
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "665,307",
-        "665,358;512,307",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 17
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 16
+          "localized_name": "mask",
+          "name": "mask",
+          "type": "MASK",
+          "link": 71
         }
       ],
       "outputs": [
         {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": [
-            19
-          ],
-          "slot_index": 0
+            72
+          ]
         }
       ],
-      "title": "Segment: eyebrow_right"
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "InvertMask"
+      },
+      "widgets_values": []
     },
     {
-      "id": 42,
+      "id": 21,
       "type": "JoinImageWithAlpha",
       "pos": [
-        400,
-        500
+        426.64110234672825,
+        486.9922450924895
       ],
       "size": [
-        200,
-        50
+        250,
+        80
       ],
-      "properties": {},
-      "widgets_values": [],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
       "inputs": [
         {
+          "localized_name": "image",
           "name": "image",
           "type": "IMAGE",
-          "link": 18
+          "link": 67
         },
         {
+          "localized_name": "alpha",
           "name": "alpha",
           "type": "MASK",
-          "link": 19
+          "link": 72
         }
       ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [
-            20
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Add Alpha: eyebrow_right"
-    },
-    {
-      "id": 43,
-      "type": "SaveImage",
-      "pos": [
-        650,
-        450
-      ],
-      "size": [
-        300,
-        250
-      ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_eyebrow_right"
-      ],
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 20
-        }
-      ],
-      "title": "Save: eyebrow_right"
-    },
-    {
-      "id": 50,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        700
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "512,563",
-        "512,358;512,716",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 22
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 21
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            24
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Segment: mouth"
-    },
-    {
-      "id": 52,
-      "type": "JoinImageWithAlpha",
-      "pos": [
-        400,
-        700
-      ],
-      "size": [
-        200,
-        50
-      ],
-      "properties": {},
-      "widgets_values": [],
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 23
-        },
-        {
-          "name": "alpha",
-          "type": "MASK",
-          "link": 24
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            25
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Add Alpha: mouth"
-    },
-    {
-      "id": 53,
-      "type": "SaveImage",
-      "pos": [
-        650,
-        650
-      ],
-      "size": [
-        300,
-        250
-      ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_mouth"
-      ],
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 25
-        }
-      ],
-      "title": "Save: mouth"
-    },
-    {
-      "id": 60,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        900
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "512,460",
-        "512,358;512,563",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 27
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 26
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            29
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Segment: nose"
-    },
-    {
-      "id": 62,
-      "type": "JoinImageWithAlpha",
-      "pos": [
-        400,
-        900
-      ],
-      "size": [
-        200,
-        50
-      ],
-      "properties": {},
-      "widgets_values": [],
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 28
-        },
-        {
-          "name": "alpha",
-          "type": "MASK",
-          "link": 29
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            30
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Add Alpha: nose"
-    },
-    {
-      "id": 63,
-      "type": "SaveImage",
-      "pos": [
-        650,
-        850
-      ],
-      "size": [
-        300,
-        250
-      ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_nose"
-      ],
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 30
-        }
-      ],
-      "title": "Save: nose"
-    },
-    {
-      "id": 70,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        1100
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "512,153",
-        "512,512",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 32
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 31
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            34
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Segment: hair_front"
-    },
-    {
-      "id": 72,
-      "type": "JoinImageWithAlpha",
-      "pos": [
-        400,
-        1100
-      ],
-      "size": [
-        200,
-        50
-      ],
-      "properties": {},
-      "widgets_values": [],
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 33
-        },
-        {
-          "name": "alpha",
-          "type": "MASK",
-          "link": 34
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             35
-          ],
-          "slot_index": 0
+          ]
         }
       ],
-      "title": "Add Alpha: hair_front"
+      "title": "3. Apply Mask: eyebrow_left",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
     },
     {
-      "id": 73,
+      "id": 22,
       "type": "SaveImage",
       "pos": [
-        650,
-        1050
+        741.9831771531656,
+        363.89830141293294
       ],
       "size": [
         300,
-        250
+        270
       ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_hair_front"
-      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
       "inputs": [
         {
+          "localized_name": "images",
           "name": "images",
           "type": "IMAGE",
           "link": 35
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
         }
       ],
-      "title": "Save: hair_front"
-    },
-    {
-      "id": 80,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        1300
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
+      "outputs": [],
+      "title": "3. Save: eyebrow_left",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
       "widgets_values": [
-        "512,102",
-        "512,409",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 37
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 36
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            39
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Segment: hair_back"
+        "mira_layer_eyebrow_left"
+      ]
     },
     {
-      "id": 82,
-      "type": "JoinImageWithAlpha",
-      "pos": [
-        400,
-        1300
-      ],
-      "size": [
-        200,
-        50
-      ],
-      "properties": {},
-      "widgets_values": [],
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 38
-        },
-        {
-          "name": "alpha",
-          "type": "MASK",
-          "link": 39
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            40
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Add Alpha: hair_back"
-    },
-    {
-      "id": 83,
+      "id": 32,
       "type": "SaveImage",
       "pos": [
-        650,
-        1250
+        767.5716938387409,
+        706.4289863301766
       ],
       "size": [
         300,
-        250
+        270
       ],
-      "properties": {},
-      "widgets_values": [
-        "mira_layer_hair_back"
-      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
       "inputs": [
         {
+          "localized_name": "images",
           "name": "images",
-          "type": "IMAGE",
-          "link": 40
-        }
-      ],
-      "title": "Save: hair_back"
-    },
-    {
-      "id": 90,
-      "type": "SAMPredictor",
-      "pos": [
-        0,
-        1500
-      ],
-      "size": [
-        350,
-        130
-      ],
-      "properties": {},
-      "widgets_values": [
-        "512,409",
-        "512,102;512,819",
-        0.5
-      ],
-      "inputs": [
-        {
-          "name": "sam_model",
-          "type": "SAM_MODEL",
-          "link": 42
-        },
-        {
-          "name": "image",
           "type": "IMAGE",
           "link": 41
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "3. Save: eyebrow_right",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "mira_layer_eyebrow_right"
+      ]
+    },
+    {
+      "id": 214,
+      "type": "InvertMask",
+      "pos": [
+        170,
+        3040
+      ],
+      "size": [
+        200,
+        40
+      ],
+      "properties": {},
+      "widgets_values": [],
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 75
         }
       ],
       "outputs": [
@@ -939,107 +3681,204 @@
           "name": "MASK",
           "type": "MASK",
           "links": [
-            44
+            76
           ],
           "slot_index": 0
         }
       ],
-      "title": "Segment: face_base"
+      "title": "Invert: ears"
     },
     {
-      "id": 92,
-      "type": "JoinImageWithAlpha",
+      "id": 215,
+      "type": "InvertMask",
       "pos": [
-        400,
-        1500
+        170,
+        1140
       ],
       "size": [
         200,
-        50
+        40
       ],
       "properties": {},
       "widgets_values": [],
       "inputs": [
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 43
-        },
-        {
-          "name": "alpha",
+          "name": "mask",
           "type": "MASK",
-          "link": 44
+          "link": 77
         }
       ],
       "outputs": [
         {
-          "name": "IMAGE",
-          "type": "IMAGE",
+          "name": "MASK",
+          "type": "MASK",
           "links": [
-            45
+            78
           ],
           "slot_index": 0
         }
       ],
-      "title": "Add Alpha: face_base"
+      "title": "Invert: face_skin"
     },
     {
-      "id": 93,
-      "type": "SaveImage",
+      "id": 216,
+      "type": "InvertMask",
       "pos": [
-        650,
-        1450
+        170,
+        1540
       ],
       "size": [
-        300,
-        250
+        200,
+        40
       ],
       "properties": {},
-      "widgets_values": [
-        "mira_layer_face_base"
-      ],
+      "widgets_values": [],
       "inputs": [
         {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 45
+          "name": "mask",
+          "type": "MASK",
+          "link": 79
         }
       ],
-      "title": "Save: face_base"
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            80
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Invert: eye_left"
     },
     {
-      "id": 100,
-      "type": "Note",
+      "id": 217,
+      "type": "InvertMask",
       "pos": [
-        -400,
-        550
+        170,
+        1840
       ],
       "size": [
-        500,
-        500
+        200,
+        40
       ],
       "properties": {},
-      "widgets_values": [
-        "=== LAYER EXTRACTION FOR INOCHI2D ===\n\nThis workflow uses SAM (Segment Anything) to extract layers\nfrom your character reference for Inochi2D rigging.\n\nREQUIREMENTS:\n  - ComfyUI-segment-anything extension\n  - SAM model: sam_vit_h_4b8939.pth in models/sams/\n\nHOW TO USE:\n1. Load your reference character image\n2. Adjust point coordinates in each SAMPredictor node:\n   - Positive points: click ON the part you want\n   - Negative points: click on nearby parts you DON'T want\n3. Run workflow - each layer saved as PNG with transparency\n\nPOINT COORDINATES:\n  Points are in format \"x,y\" or \"x1,y1;x2,y2\" for multiple\n  For 1024x1024 image:\n  - Center: 512,512\n  - Left eye (approx): 360,360\n  - Right eye (approx): 660,360\n  - Mouth: 512,560\n\nTIPS:\n  - Start with one layer, get it right, then do others\n  - More points = more precise selection\n  - Negative points help exclude nearby parts\n  - May need manual cleanup in Photoshop/GIMP\n\nOUTPUT FILES:\n  mira_layer_eye_left.png\n  mira_layer_eye_right.png\n  mira_layer_eyebrow_left.png\n  mira_layer_eyebrow_right.png\n  mira_layer_mouth.png\n  mira_layer_hair_front.png\n  mira_layer_hair_back.png\n  mira_layer_face_base.png\n\nNEXT STEPS:\n  1. Import layers into Inochi2D\n  2. Create hierarchy (eyes → head, mouth → head, etc.)\n  3. Add mesh deformation\n  4. Define parameters for animation\n"
+      "widgets_values": [],
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 81
+        }
       ],
-      "title": "Instructions"
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            82
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Invert: eye_right"
     },
     {
-      "id": 101,
-      "type": "Note",
+      "id": 218,
+      "type": "InvertMask",
       "pos": [
-        650,
-        1600
+        170,
+        2140
       ],
       "size": [
-        350,
-        250
+        200,
+        40
       ],
       "properties": {},
-      "widgets_values": [
-        "=== MANUAL EXTRACTION (BACKUP) ===\n\nIf SAM doesn't segment cleanly, do it manually:\n\n1. Open reference in Photoshop/GIMP\n2. Select each part with lasso/magic wand\n3. Copy to new layer\n4. Delete background (transparent)\n5. Save each layer as PNG\n\nKeep all layers same canvas size (1024x1024)\nso they align when stacked in Inochi2D.\n"
+      "widgets_values": [],
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 83
+        }
       ],
-      "title": "Fallback: Manual Extraction"
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            84
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Invert: mouth"
+    },
+    {
+      "id": 219,
+      "type": "InvertMask",
+      "pos": [
+        170,
+        2440
+      ],
+      "size": [
+        200,
+        40
+      ],
+      "properties": {},
+      "widgets_values": [],
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 85
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            86
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Invert: nose"
+    },
+    {
+      "id": 220,
+      "type": "InvertMask",
+      "pos": [
+        170,
+        2740
+      ],
+      "size": [
+        200,
+        40
+      ],
+      "properties": {},
+      "widgets_values": [],
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 87
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            88
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Invert: hair"
     }
   ],
   "links": [
@@ -1048,16 +3887,16 @@
       1,
       0,
       10,
-      1,
+      0,
       "IMAGE"
     ],
     [
       2,
-      2,
-      0,
       10,
+      1,
+      11,
       0,
-      "SAM_MODEL"
+      "MASK"
     ],
     [
       3,
@@ -1069,7 +3908,7 @@
     ],
     [
       4,
-      10,
+      11,
       0,
       12,
       1,
@@ -1084,162 +3923,42 @@
       "IMAGE"
     ],
     [
-      6,
-      1,
-      0,
-      20,
-      1,
-      "IMAGE"
-    ],
-    [
-      7,
-      2,
-      0,
-      20,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      8,
-      1,
-      0,
-      22,
-      0,
-      "IMAGE"
-    ],
-    [
-      9,
-      20,
-      0,
-      22,
-      1,
-      "MASK"
-    ],
-    [
-      10,
-      22,
-      0,
-      23,
-      0,
-      "IMAGE"
-    ],
-    [
-      11,
-      1,
-      0,
-      30,
-      1,
-      "IMAGE"
-    ],
-    [
-      12,
-      2,
-      0,
-      30,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      13,
-      1,
-      0,
-      32,
-      0,
-      "IMAGE"
-    ],
-    [
-      14,
-      30,
-      0,
-      32,
-      1,
-      "MASK"
-    ],
-    [
-      15,
-      32,
-      0,
-      33,
-      0,
-      "IMAGE"
-    ],
-    [
       16,
-      1,
+      12,
       0,
       40,
-      1,
+      0,
       "IMAGE"
-    ],
-    [
-      17,
-      2,
-      0,
-      40,
-      0,
-      "SAM_MODEL"
     ],
     [
       18,
       1,
       0,
-      42,
+      50,
       0,
       "IMAGE"
-    ],
-    [
-      19,
-      40,
-      0,
-      42,
-      1,
-      "MASK"
     ],
     [
       20,
-      42,
-      0,
-      43,
-      0,
-      "IMAGE"
-    ],
-    [
-      21,
       1,
       0,
-      50,
-      1,
+      60,
+      0,
       "IMAGE"
     ],
     [
       22,
-      2,
-      0,
-      50,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      23,
       1,
       0,
-      52,
+      70,
       0,
       "IMAGE"
     ],
     [
       24,
-      50,
-      0,
-      52,
       1,
-      "MASK"
-    ],
-    [
-      25,
-      52,
       0,
-      53,
+      80,
       0,
       "IMAGE"
     ],
@@ -1247,186 +3966,384 @@
       26,
       1,
       0,
-      60,
-      1,
+      90,
+      0,
       "IMAGE"
-    ],
-    [
-      27,
-      2,
-      0,
-      60,
-      0,
-      "SAM_MODEL"
     ],
     [
       28,
       1,
       0,
-      62,
+      100,
       0,
       "IMAGE"
-    ],
-    [
-      29,
-      60,
-      0,
-      62,
-      1,
-      "MASK"
-    ],
-    [
-      30,
-      62,
-      0,
-      63,
-      0,
-      "IMAGE"
-    ],
-    [
-      31,
-      1,
-      0,
-      70,
-      1,
-      "IMAGE"
-    ],
-    [
-      32,
-      2,
-      0,
-      70,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      33,
-      1,
-      0,
-      72,
-      0,
-      "IMAGE"
-    ],
-    [
-      34,
-      70,
-      0,
-      72,
-      1,
-      "MASK"
     ],
     [
       35,
-      72,
+      21,
       0,
-      73,
-      0,
-      "IMAGE"
-    ],
-    [
-      36,
-      1,
-      0,
-      80,
-      1,
-      "IMAGE"
-    ],
-    [
-      37,
-      2,
-      0,
-      80,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      38,
-      1,
-      0,
-      82,
-      0,
-      "IMAGE"
-    ],
-    [
-      39,
-      80,
-      0,
-      82,
-      1,
-      "MASK"
-    ],
-    [
-      40,
-      82,
-      0,
-      83,
+      22,
       0,
       "IMAGE"
     ],
     [
       41,
-      1,
+      31,
       0,
-      90,
-      1,
-      "IMAGE"
-    ],
-    [
-      42,
-      2,
-      0,
-      90,
-      0,
-      "SAM_MODEL"
-    ],
-    [
-      43,
-      1,
-      0,
-      92,
+      32,
       0,
       "IMAGE"
     ],
     [
-      44,
+      46,
+      40,
+      0,
+      204,
+      0,
+      "IMAGE"
+    ],
+    [
+      48,
+      204,
+      0,
+      41,
+      0,
+      "IMAGE"
+    ],
+    [
+      49,
+      50,
+      0,
+      205,
+      0,
+      "IMAGE"
+    ],
+    [
+      51,
+      205,
+      0,
+      51,
+      0,
+      "IMAGE"
+    ],
+    [
+      52,
+      60,
+      0,
+      206,
+      0,
+      "IMAGE"
+    ],
+    [
+      54,
+      206,
+      0,
+      61,
+      0,
+      "IMAGE"
+    ],
+    [
+      55,
+      70,
+      0,
+      207,
+      0,
+      "IMAGE"
+    ],
+    [
+      57,
+      207,
+      0,
+      71,
+      0,
+      "IMAGE"
+    ],
+    [
+      58,
+      80,
+      0,
+      208,
+      0,
+      "IMAGE"
+    ],
+    [
+      60,
+      208,
+      0,
+      81,
+      0,
+      "IMAGE"
+    ],
+    [
+      61,
       90,
       0,
-      92,
+      209,
+      0,
+      "IMAGE"
+    ],
+    [
+      63,
+      209,
+      0,
+      91,
+      0,
+      "IMAGE"
+    ],
+    [
+      64,
+      100,
+      0,
+      210,
+      0,
+      "IMAGE"
+    ],
+    [
+      66,
+      210,
+      0,
+      101,
+      0,
+      "IMAGE"
+    ],
+    [
+      67,
+      12,
+      0,
+      21,
+      0,
+      "IMAGE"
+    ],
+    [
+      69,
+      12,
+      0,
+      31,
+      0,
+      "IMAGE"
+    ],
+    [
+      71,
+      20,
+      1,
+      212,
+      0,
+      "MASK"
+    ],
+    [
+      72,
+      212,
+      0,
+      21,
       1,
       "MASK"
     ],
     [
-      45,
-      92,
+      73,
+      30,
+      1,
+      213,
       0,
-      93,
+      "MASK"
+    ],
+    [
+      74,
+      213,
       0,
-      "IMAGE"
+      31,
+      1,
+      "MASK"
+    ],
+    [
+      75,
+      100,
+      1,
+      214,
+      0,
+      "MASK"
+    ],
+    [
+      76,
+      214,
+      0,
+      210,
+      1,
+      "MASK"
+    ],
+    [
+      77,
+      40,
+      1,
+      215,
+      0,
+      "MASK"
+    ],
+    [
+      78,
+      215,
+      0,
+      204,
+      1,
+      "MASK"
+    ],
+    [
+      79,
+      50,
+      1,
+      216,
+      0,
+      "MASK"
+    ],
+    [
+      80,
+      216,
+      0,
+      205,
+      1,
+      "MASK"
+    ],
+    [
+      81,
+      60,
+      1,
+      217,
+      0,
+      "MASK"
+    ],
+    [
+      82,
+      217,
+      0,
+      206,
+      1,
+      "MASK"
+    ],
+    [
+      83,
+      70,
+      1,
+      218,
+      0,
+      "MASK"
+    ],
+    [
+      84,
+      218,
+      0,
+      207,
+      1,
+      "MASK"
+    ],
+    [
+      85,
+      80,
+      1,
+      219,
+      0,
+      "MASK"
+    ],
+    [
+      86,
+      219,
+      0,
+      208,
+      1,
+      "MASK"
+    ],
+    [
+      87,
+      90,
+      1,
+      220,
+      0,
+      "MASK"
+    ],
+    [
+      88,
+      220,
+      0,
+      209,
+      1,
+      "MASK"
     ]
   ],
   "groups": [
     {
-      "title": "Input",
+      "id": 1,
+      "title": "Stage 1: Input",
       "bounding": [
-        -420,
+        -520,
         -50,
         360,
-        550
+        500
       ],
-      "color": "#3f789e"
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
     },
     {
-      "title": "Layer Extraction",
+      "id": 2,
+      "title": "Stage 2: Hair Removal Pipeline",
       "bounding": [
         -20,
-        -150,
-        980,
-        1900
+        -250,
+        1450,
+        500
       ],
-      "color": "#8e6f3f"
+      "color": "#8e443f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "Stage 3: Manual Eyebrow Masks (from hair-removed)",
+      "bounding": [
+        -20,
+        250,
+        1440.2479545710203,
+        760.3948447553266
+      ],
+      "color": "#8e7f3f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "Stage 4: Skin (from hair-removed)",
+      "bounding": [
+        -20,
+        1050,
+        720,
+        350
+      ],
+      "color": "#3f8e5a",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "Stage 5: Direct Layers (from original)",
+      "bounding": [
+        -20,
+        1450,
+        720,
+        1850
+      ],
+      "color": "#6f3f8e",
+      "font_size": 24,
+      "flags": {}
     }
   ],
   "config": {},
-  "extra": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8148284048366898,
+      "offset": [
+        867.0323897335477,
+        -1028.6199675128576
+      ]
+    },
+    "workflowRendererVersion": "LG"
+  },
   "version": 0.4
 }
