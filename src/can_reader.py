@@ -112,7 +112,7 @@ class CANReader:
         
         # Load DBC if provided
         self.db = None
-        if dbc_path and Path(dbc_path).exists():
+        if dbc_path and Path(dbc_path).exists() and interface != "mock":
             if CAN_AVAILABLE:
                 self.db = cantools.database.load_file(dbc_path)
         

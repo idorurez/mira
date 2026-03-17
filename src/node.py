@@ -30,9 +30,14 @@ class OpenClawNode:
         self,
         config_dir: str = "~/.openclaw",
         on_response: Optional[Callable[[str], None]] = None,
+        personality_path: Optional[str] = None,
     ):
         self.config_dir = Path(config_dir).expanduser()
         self.on_response = on_response
+        self._personality: Optional[str] = None
+        if personality_path and Path(personality_path).exists():
+            self._personality = Path(personality_path).read_text().strip()
+            print(f"[node] Personality loaded from {personality_path}")
 
         # Loaded from config files
         self._node_id: Optional[str] = None
@@ -273,6 +278,11 @@ class OpenClawNode:
             print("[node] Not connected to gateway")
             return
 
+        # Prepend personality as system context if available
+        full_text = text
+        if self._personality:
+            full_text = f"[SYSTEM CONTEXT — You must follow these instructions for all responses]\n{self._personality}\n\n[USER VOICE INPUT]\n{text}"
+
         req_id = self._next_id()
         msg = {
             "type": "req",
@@ -281,7 +291,7 @@ class OpenClawNode:
             "params": {
                 "event": "voice.transcript",
                 "payload": {
-                    "text": text,
+                    "text": full_text,
                     "sessionKey": agent,
                 },
             },

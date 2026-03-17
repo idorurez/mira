@@ -76,6 +76,22 @@ def _prep_for_voicevox(text: str) -> str:
     return text.strip()
 
 
+def _generate_chime(sample_rate=24000, duration=0.15):
+    """Generate a short two-tone chime as float32 numpy array."""
+    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+    # Two quick ascending tones
+    half = len(t) // 2
+    tone = np.zeros_like(t)
+    tone[:half] = np.sin(2 * np.pi * 880 * t[:half])  # A5
+    tone[half:] = np.sin(2 * np.pi * 1320 * t[half:])  # E6
+    # Apply envelope to avoid clicks
+    envelope = np.ones_like(t)
+    fade = int(sample_rate * 0.01)
+    envelope[:fade] = np.linspace(0, 1, fade)
+    envelope[-fade:] = np.linspace(1, 0, fade)
+    return (tone * envelope).astype(np.float32), sample_rate
+
+
 class Voice:
     """
     Text-to-speech output for ミラ.
@@ -247,6 +263,17 @@ class Voice:
         arr = arr * self.volume
         sd.play(arr, sr, device=self.output_device)
         sd.wait()
+
+    def chime(self):
+        """Play a short chime to acknowledge wake word detection."""
+        if not AUDIO_AVAILABLE:
+            return
+        try:
+            audio, sr = _generate_chime()
+            sd.play(audio * self.volume, sr, device=self.output_device)
+            sd.wait()
+        except Exception:
+            pass
 
     def stop(self):
         try:

@@ -83,6 +83,8 @@ class VoiceInput:
         self._thread: Optional[threading.Thread] = None
         self._stt: Optional[VoskSTT] = None
         self._recording = False  # True while recording user speech
+        self.muted = False  # Set True to suppress wake word detection (e.g. during TTS)
+        self._audio_queue: Optional[queue.Queue] = None
 
     @property
     def is_listening(self) -> bool:
@@ -106,6 +108,15 @@ class VoiceInput:
         if self._thread:
             self._thread.join(timeout=3)
             self._thread = None
+
+    def drain_queue(self):
+        """Drain the audio queue to discard buffered audio (e.g. after TTS)."""
+        if hasattr(self, '_audio_queue') and self._audio_queue is not None:
+            while not self._audio_queue.empty():
+                try:
+                    self._audio_queue.get_nowait()
+                except queue.Empty:
+                    break
 
     def listen_once(self) -> str:
         """Record once (no wake word) and return transcribed text."""
@@ -157,6 +168,7 @@ class VoiceInput:
         print(f"  Voice input ready!")
 
         audio_queue = queue.Queue(maxsize=200)
+        self._audio_queue = audio_queue
 
         def audio_callback(indata, frames, time_info, status):
             try:
@@ -177,12 +189,20 @@ class VoiceInput:
                 except queue.Empty:
                     continue
 
+                # Skip processing entirely while muted (during TTS playback)
+                if self.muted:
+                    continue
+
                 # Fast resample to 16kHz
                 audio_int16 = self._resample_16k(chunk, native_rate)
 
                 # Feed to wake word model
                 prediction = oww.predict(audio_int16)
                 score = prediction.get(target_ww, 0)
+
+                # Debug: log score periodically when non-trivial
+                if score > 0.05:
+                    print(f"  [ww score: {score:.3f}]")
 
                 if score > self.wake_threshold:
                     print(f"  Wake word detected! (score: {score:.2f})")
@@ -216,10 +236,12 @@ class VoiceInput:
         chunks = []
         silence_start = None
         start_time = time.time()
+        rms_samples = []
 
         while self._running:
             elapsed = time.time() - start_time
             if elapsed >= self.max_record_seconds:
+                print(f"  (max duration {self.max_record_seconds}s reached)")
                 break
 
             try:
@@ -232,10 +254,15 @@ class VoiceInput:
 
             # Check RMS for silence detection (on original float audio)
             rms = np.sqrt(np.mean(chunk ** 2))
+            rms_samples.append(rms)
+            # Log RMS periodically (every ~0.5s)
+            if len(rms_samples) % 6 == 0:
+                print(f"  [rms: {rms:.4f} | thresh: {self.silence_threshold}]")
             if rms < self.silence_threshold:
                 if silence_start is None:
                     silence_start = time.time()
                 elif time.time() - silence_start >= self.silence_duration:
+                    print(f"  (silence detected after {elapsed:.1f}s)")
                     break
             else:
                 silence_start = None

@@ -193,12 +193,13 @@ def print_state(state: CarState):
 class GatewayBridge:
     """Bridges sync voice callbacks to the async OpenClaw gateway node."""
 
-    def __init__(self):
+    def __init__(self, personality_path: str = None):
         self.node = None
         self._loop = None
         self._thread = None
         self._response_text = None
         self._response_event = threading.Event()
+        self._personality_path = personality_path
 
     def start(self):
         """Try to connect to the OpenClaw gateway. Returns True if connected."""
@@ -215,7 +216,10 @@ class GatewayBridge:
             self._response_event.set()
 
         try:
-            self.node = OpenClawNode(on_response=on_response)
+            self.node = OpenClawNode(
+                on_response=on_response,
+                personality_path=self._personality_path,
+            )
             self.node.load_config()
         except Exception as e:
             print(f"  Gateway: config error ({e})")
@@ -300,7 +304,7 @@ def run_text_mode(args, config):
     # Gateway (primary brain)
     gateway = None
     if not args.no_gateway:
-        gateway = GatewayBridge()
+        gateway = GatewayBridge(personality_path=config.brain.personality_path)
         if not gateway.start():
             gateway = None
 
@@ -438,7 +442,7 @@ def run_voice_mode(args, config):
     # Gateway (primary brain — Claude via OpenClaw)
     gateway = None
     if not args.no_gateway:
-        gateway = GatewayBridge()
+        gateway = GatewayBridge(personality_path=config.brain.personality_path)
         if not gateway.start():
             gateway = None
 
@@ -461,21 +465,36 @@ def run_voice_mode(args, config):
         face.thinking()
 
         response = None
+        t0 = time.time()
 
         # Try gateway first (Claude via OpenClaw)
         if gateway and gateway.connected:
             response = gateway.send_and_wait(text)
             if response:
+                t1 = time.time()
                 print(f"  ミラ (cloud): \"{response}\"")
+                print(f"  [gateway: {t1-t0:.1f}s]")
 
         # Fall back to local brain
         if response is None:
             response = brain.chat(text, can.state)
+            t1 = time.time()
             print(f"  ミラ (local): \"{response}\"")
+            print(f"  [brain: {t1-t0:.1f}s]")
 
+        voice_input.muted = True
         face.start_speaking()
-        voice.speak(response, blocking=True)
+        t2 = time.time()
+        ok = voice.speak(response, blocking=True)
+        t3 = time.time()
+        print(f"  [TTS: {t3-t2:.1f}s | total: {t3-t0:.1f}s]")
         face.stop_speaking()
+        # Cooldown: keep muted after TTS to avoid self-triggering from speaker output
+        time.sleep(3.0)
+        voice_input.drain_queue()
+        time.sleep(0.5)
+        voice_input.drain_queue()
+        voice_input.muted = False
         if brain.current_session:
             memory.log_speech(response, brain.current_session.session_id)
 

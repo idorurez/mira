@@ -126,8 +126,8 @@ class FaceController:
         
     def listening(self):
         """Show attentive expression (during voice input)."""
-        self.set_expression(Expression.NEUTRAL)
-        self.look_at(0.0, 0.0)  # look straight ahead
+        self.set_expression(Expression.SURPRISED, transition_ms=100)
+        self.look_at(0.0, -0.1)  # look slightly toward user
         
     def react_happy(self):
         """Quick happy reaction."""
