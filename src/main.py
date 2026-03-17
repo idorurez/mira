@@ -475,12 +475,10 @@ def run_voice_mode(args, config):
                 print(f"  ミラ (cloud): \"{response}\"")
                 print(f"  [gateway: {t1-t0:.1f}s]")
 
-        # Fall back to local brain
+        # Fall back — don't use local LLM (too slow on Pi), just apologize
         if response is None:
-            response = brain.chat(text, can.state)
-            t1 = time.time()
-            print(f"  ミラ (local): \"{response}\"")
-            print(f"  [brain: {t1-t0:.1f}s]")
+            response = "Sorry, I couldn't reach the gateway. Try again."
+            print(f"  ミラ (fallback): no gateway response")
 
         voice_input.muted = True
         face.start_speaking()

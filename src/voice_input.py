@@ -225,8 +225,10 @@ class VoiceInput:
 
                     if audio is not None and len(audio) > 0:
                         text = self._stt.transcribe(audio)
-                        if text and self.on_speech:
+                        if text and len(text.split()) >= 2 and self.on_speech:
                             self.on_speech(text)
+                        elif text and len(text.split()) < 2:
+                            print(f"  (Too short, ignoring: \"{text}\")")
                         elif not text:
                             print("  (Didn't catch that)")
 
