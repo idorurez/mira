@@ -28,8 +28,14 @@
 
 | Item | Purpose | Est. Price | Link |
 |------|---------|------------|------|
-| ☐ **USB Microphone** | Voice input | $20 | ReSpeaker USB Mic Array or similar |
-| ☐ **USB/3.5mm Speaker** | Voice output | $15 | Any small powered speaker |
+| ☐ **Jabra Speak 410** (recommended) | Voice input + TTS output | $30-50 used | [eBay](https://ebay.com) / [Amazon](https://amazon.com) |
+| ☐ **OR: Seeed ReSpeaker XVF3800** | Voice input (AEC mixed reviews) | $60-70 | [Seeed](https://www.seeedstudio.com/ReSpeaker-XVF3800-USB-Mic-Array-p-6488.html) |
+
+**Jabra Speak 410** — USB speakerphone with hardware AEC. Use as both mic AND speaker for TTS. Disable all software AEC (PulseAudio, webrtc). Proven working on Pi for voice assistants.
+
+**ReSpeaker XVF3800** — 4-mic USB array with onboard DSP. Community reports: AEC is "okay" not great, may have ducking issues. Fallback option if Jabra doesn't fit your setup.
+
+See `docs/VOICE_INPUT.md` for detailed setup notes.
 
 ### CAN Hardware
 

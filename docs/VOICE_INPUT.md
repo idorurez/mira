@@ -2,6 +2,62 @@
 
 Voice input for Mira: wake word detection → speech recording → STT transcription.
 
+## Recommended Microphone Hardware
+
+For reliable voice input in a car environment (road noise, TTS playing through speakers), you need hardware with **onboard acoustic echo cancellation (AEC)**.
+
+### Best Option: Jabra Speak 410 (~$30-50 used)
+
+The Jabra Speak 410 USB speakerphone is the recommended microphone for Mira:
+
+- **Hardware AEC** — cancels its own speaker output from mic input
+- **Proven on Pi** — shows up as standard USB audio, no drivers needed
+- **Conference-grade** — designed for full-duplex voice (talking while audio plays)
+- **Far-field pickup** — can hear whispers from 10+ feet away
+
+**Critical setup notes:**
+1. **Disable ALL software AEC/noise suppression** — PulseAudio echo-cancel module, webrtc, rnnoise, etc.
+2. **Use Jabra as BOTH mic AND speaker** — AEC only works for its own speaker output
+3. **Route TTS audio through the Jabra** — so it can cancel Mira's voice from the mic
+
+```bash
+# Do NOT use PulseAudio echo cancel module with Jabra
+# The hardware handles it — software AEC adds latency and artifacts
+
+# Just use the Jabra directly:
+# Input: Jabra mic
+# Output: Jabra speaker (for TTS)
+```
+
+**Why not use car speakers for TTS output?**
+If you route TTS to car speakers (aux/bluetooth), the Jabra's AEC won't help cancel that audio. Options:
+- Accept some echo (car speakers are directional away from you)
+- Mute TTS during voice input
+- Use software AEC (adds CPU load, worse quality)
+
+### Alternative: Seeed ReSpeaker XVF3800 (~$60-70)
+
+The ReSpeaker USB mic arrays have onboard DSP but community reports are mixed:
+- AEC is "okay" but not great — "bathroom recording" quality
+- Suffers from "ducking" — input drops then slowly recovers
+- Background noise filtering only works during continuous speech
+
+**If you try it:**
+- Use USB mode (not I2S) to avoid GPIO conflicts with CAN HAT
+- May still need software AEC tuning
+- Consider it a fallback if Jabra doesn't work for your setup
+
+### Not Recommended: Cheap USB Mics
+
+Basic USB mics without hardware AEC will require software echo cancellation:
+- **PulseAudio module-echo-cancel** — uses webrtc, "stinky" on ARM
+- **Speexdsp** — better but still CPU-intensive
+- **rnnoise** — glitchy artifacts
+
+If you must use a cheap mic, disable software AEC entirely and accept echo, or implement mute-during-playback logic.
+
+---
+
 ## Current Stack (Working on Pi 5)
 
 ```
