@@ -13,6 +13,8 @@ Usage:
 
 import argparse
 import asyncio
+import queue
+import re
 import time
 import signal
 import sys
@@ -191,15 +193,27 @@ def print_state(state: CarState):
 
 
 class GatewayBridge:
-    """Bridges sync voice callbacks to the async OpenClaw gateway node."""
+    """Bridges sync voice callbacks to the async OpenClaw gateway node.
 
-    def __init__(self, personality_path: str = None):
+    Supports two modes:
+    - send_and_wait(): Block until full response (legacy)
+    - send_streamed(): Stream deltas via callbacks, push sentences to a queue for TTS
+    """
+
+    # Sentence-ending punctuation for chunking streamed text
+    _SENTENCE_END = re.compile(r'[.!?]\s|[.!?]$')
+
+    def __init__(self):
         self.node = None
         self._loop = None
         self._thread = None
         self._response_text = None
         self._response_event = threading.Event()
-        self._personality_path = personality_path
+
+        # Streaming state
+        self._delta_callback = None
+        self._sentence_queue = None
+        self._stream_buffer = ""
 
     def start(self):
         """Try to connect to the OpenClaw gateway. Returns True if connected."""
@@ -212,13 +226,37 @@ class GatewayBridge:
         self._response_event = threading.Event()
 
         def on_response(text):
+            # Flush any remaining buffered text as final sentence
+            if self._sentence_queue is not None:
+                remaining = self._stream_buffer.strip()
+                if remaining:
+                    self._sentence_queue.put(remaining)
+                self._sentence_queue.put(None)  # Sentinel: stream done
+                self._stream_buffer = ""
             self._response_text = text
             self._response_event.set()
+
+        def on_delta(delta):
+            if self._delta_callback:
+                self._delta_callback(delta)
+            if self._sentence_queue is not None:
+                self._stream_buffer += delta
+                # Check for complete sentences to push to TTS
+                while True:
+                    m = self._SENTENCE_END.search(self._stream_buffer)
+                    if not m:
+                        break
+                    # Split at the sentence boundary
+                    end = m.end()
+                    sentence = self._stream_buffer[:end].strip()
+                    self._stream_buffer = self._stream_buffer[end:]
+                    if sentence:
+                        self._sentence_queue.put(sentence)
 
         try:
             self.node = OpenClawNode(
                 on_response=on_response,
-                personality_path=self._personality_path,
+                on_delta=on_delta,
             )
             self.node.load_config()
         except Exception as e:
@@ -258,22 +296,58 @@ class GatewayBridge:
 
         self._response_text = None
         self._response_event.clear()
+        self._sentence_queue = None
+        self._delta_callback = None
+        self._stream_buffer = ""
 
         # Schedule the send on the node's event loop
         future = asyncio.run_coroutine_threadsafe(
             self.node.send_voice_transcript(text), self._loop
         )
         try:
-            future.result(timeout=5)  # send should complete quickly
+            future.result(timeout=5)
         except Exception as e:
             print(f"  [gateway send error: {e}]")
             return None
 
-        # Wait for Claude's response
         if self._response_event.wait(timeout=timeout):
             return self._response_text
         else:
             print("  [gateway response timeout]")
+            return None
+
+    def send_streamed(self, text, sentence_queue, on_delta=None, timeout=30):
+        """Send a message and stream the response.
+
+        Deltas are passed to on_delta for display.
+        Complete sentences are pushed to sentence_queue for TTS.
+        A None sentinel is pushed when the response is complete.
+        Returns the full response text, or None on timeout.
+        """
+        if not self.connected or self._loop is None:
+            return None
+
+        self._response_text = None
+        self._response_event.clear()
+        self._sentence_queue = sentence_queue
+        self._delta_callback = on_delta
+        self._stream_buffer = ""
+
+        future = asyncio.run_coroutine_threadsafe(
+            self.node.send_voice_transcript(text), self._loop
+        )
+        try:
+            future.result(timeout=5)
+        except Exception as e:
+            print(f"  [gateway send error: {e}]")
+            sentence_queue.put(None)
+            return None
+
+        if self._response_event.wait(timeout=timeout):
+            return self._response_text
+        else:
+            print("  [gateway response timeout]")
+            sentence_queue.put(None)
             return None
 
     def stop(self):
@@ -304,7 +378,7 @@ def run_text_mode(args, config):
     # Gateway (primary brain)
     gateway = None
     if not args.no_gateway:
-        gateway = GatewayBridge(personality_path=config.brain.personality_path)
+        gateway = GatewayBridge()
         if not gateway.start():
             gateway = None
 
@@ -406,9 +480,31 @@ def run_text_mode(args, config):
             elif verb == "state":
                 print_state(can.state)
             else:
-                response, src = _chat_with_fallback(gateway, brain, can.state, cmd)
-                print(f"  ({src})")
-                voice.speak(response)
+                if gateway and gateway.connected:
+                    # Stream response — print tokens as they arrive
+                    sys.stdout.write("  ミラ: ")
+                    sys.stdout.flush()
+                    sq = queue.Queue()
+                    t_send = time.time()
+                    t_first = [None]
+                    def on_delta(d):
+                        if t_first[0] is None:
+                            t_first[0] = time.time()
+                        sys.stdout.write(d)
+                        sys.stdout.flush()
+                    response = gateway.send_streamed(cmd, sq, on_delta=on_delta)
+                    # Drain the sentence queue (we don't TTS in text mode)
+                    while True:
+                        s = sq.get()
+                        if s is None:
+                            break
+                    t_done = time.time()
+                    ttft = (t_first[0] - t_send) if t_first[0] else 0
+                    sys.stdout.write(f"\n  [TTFT: {ttft:.1f}s | total: {t_done-t_send:.1f}s]\n")
+                    sys.stdout.flush()
+                else:
+                    response = brain.chat(cmd, can.state)
+                    print(f"  ミラ (local): {response}")
 
     finally:
         running = False
@@ -442,7 +538,7 @@ def run_voice_mode(args, config):
     # Gateway (primary brain — Claude via OpenClaw)
     gateway = None
     if not args.no_gateway:
-        gateway = GatewayBridge(personality_path=config.brain.personality_path)
+        gateway = GatewayBridge()
         if not gateway.start():
             gateway = None
 
@@ -463,36 +559,43 @@ def run_voice_mode(args, config):
         """Called when speech is transcribed after wake word."""
         print(f"  You: \"{text}\"")
         face.thinking()
-
-        response = None
+        voice_input.muted = True
         t0 = time.time()
 
-        # Try gateway first (Claude via OpenClaw)
         if gateway and gateway.connected:
-            response = gateway.send_and_wait(text)
-            if response:
-                t1 = time.time()
-                print(f"  ミラ (cloud): \"{response}\"")
-                print(f"  [gateway: {t1-t0:.1f}s]")
+            # Streamed: TTS starts on first complete sentence while Claude keeps generating
+            sq = queue.Queue()
 
-        # Fall back — don't use local LLM (too slow on Pi), just apologize
-        if response is None:
+            def tts_worker():
+                voice.speak_streamed(
+                    sq,
+                    on_start=lambda: face.start_speaking(),
+                    on_done=lambda: face.stop_speaking(),
+                )
+
+            tts_thread = threading.Thread(target=tts_worker, daemon=True)
+            tts_thread.start()
+
+            response = gateway.send_streamed(text, sq)
+            tts_thread.join(timeout=60)
+
+            t1 = time.time()
+            if response is None:
+                response = "Sorry, I couldn't reach the gateway."
+            print(f"  ミラ: \"{response}\"")
+            print(f"  [{t1-t0:.1f}s total]")
+        else:
             response = "Sorry, I couldn't reach the gateway. Try again."
-            print(f"  ミラ (fallback): no gateway response")
+            print(f"  ミラ: \"{response}\"")
+            face.start_speaking()
+            voice.speak(response, blocking=True)
+            face.stop_speaking()
 
-        voice_input.muted = True
-        face.start_speaking()
-        t2 = time.time()
-        ok = voice.speak(response, blocking=True)
-        t3 = time.time()
-        print(f"  [TTS: {t3-t2:.1f}s | total: {t3-t0:.1f}s]")
-        face.stop_speaking()
-        # Cooldown: keep muted after TTS to avoid self-triggering from speaker output
-        time.sleep(3.0)
-        voice_input.drain_queue()
-        time.sleep(0.5)
+        # Cooldown to avoid self-triggering from speaker audio
+        time.sleep(2.0)
         voice_input.drain_queue()
         voice_input.muted = False
+
         if brain.current_session:
             memory.log_speech(response, brain.current_session.session_id)
 

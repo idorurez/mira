@@ -356,10 +356,27 @@ Ask Claude:
 
 ---
 
+## Agent Session Key
+
+The Pi's voice pipeline (`src/node.py`) sends messages to the gateway with `sessionKey: "agent:mira:main"`. This means:
+
+- **`mira`** = the agent name on the gateway (must exist, see `GATEWAY_SETUP.md` Step 5)
+- **`main`** = the session scope (conversation thread)
+
+If the agent name doesn't match a registered gateway agent:
+- TTFT (time-to-first-token) will be 5-10s+ instead of <2s
+- Prompt caching won't work
+- Personality won't be applied
+
+The personality/system prompt must be configured on the gateway agent's `SOUL.md`, not injected in user messages from the Pi.
+
+---
+
 ## Next Steps
 
 Once node is connected:
-1. Follow `PI_SETUP.md` for voice components
-2. Test CAN HAT
-3. Set up presence detection
-4. Build voice pipeline
+1. Follow `GATEWAY_SETUP.md` Step 5 to register the `mira` agent with personality
+2. Follow `PI_SETUP.md` for voice components
+3. Test CAN HAT
+4. Set up presence detection
+5. Build voice pipeline

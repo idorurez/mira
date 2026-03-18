@@ -1,54 +1,62 @@
-# Mira Session Status — 2026-03-16
+# Mira Session Status — 2026-03-17
 
 ## What's Working
 
-- **Full voice pipeline**: wake word (OpenWakeWord "hey_jarvis") → STT (Vosk) → Claude (OpenClaw gateway) → TTS (Kokoro af_river) → Live2D avatar
-- **Personality injection**: `data/personality.md` is prepended to every gateway message. Claude responds in character — short, composed, no filler
-- **Avatar rendering**: Live2D Hiyori model in Chromium kiosk mode at 60fps. Expression changes on wake (surprised), thinking (waiting for Claude), talking (mouth animation during TTS)
+- **Streaming voice pipeline**: wake word (OpenWakeWord "hey_jarvis") → STT (Vosk) → Claude (OpenClaw gateway, streamed) → TTS (Kokoro af_river, sentence-chunked) → Live2D avatar
+- **Streaming response**: Gateway deltas stream token-by-token. TTS starts on first complete sentence while Claude generates the rest. Perceived latency = time-to-first-sentence instead of full-response wait
+- **Avatar rendering**: Live2D Hiyori model in Chromium kiosk mode at 60fps. Dramatic expressions with head angle changes on wake (surprised), thinking (eyes up-right, head tilt), talking (mouth animation during TTS)
 - **OpenClaw node**: systemd service (`piichan.service`) auto-starts on boot. Gateway bridge in main.py connects separately for voice loop
-- **Self-trigger prevention**: mic muted during TTS, skip OWW prediction while muted, audio queue drain, 3.5s cooldown, single-word transcript filter
+- **Self-trigger prevention**: mic muted during TTS, skip OWW prediction while muted, audio queue drain, 2s cooldown, single-word transcript filter
 - **Voice selection**: English = Kokoro `af_river` (calm, mature), Japanese = VOICEVOX 冥鳴ひまり style_id=14
+- **Text mode**: `--simulate --no-mic` for testing gateway + TTS without mic. Streams tokens to terminal in real-time
 
 ## Current Issues
 
-### 1. Mic Signal-to-Noise Ratio (Critical)
+### 1. Gateway TTFT (Critical)
+- Time-to-first-token: 4.5-10s+ and degrading per message in a session
+- Root cause: agent/session configuration on gateway side
+- The `mira` agent must be properly configured on gateway with system prompt (personality)
+- Personality must be in system prompt (cacheable), NOT injected in user messages
+- Session key is `agent:mira:main` — agent name must match exactly
+- **Fix**: Configure `mira` agent on gateway with `data/personality.md` as system prompt in SOUL.md
+
+### 2. Mic Signal-to-Noise Ratio (Critical)
 - USB PnP Sound Device (hw:2,0) picks up speech at ~0.20 RMS, ambient noise at ~0.15 RMS
-- Very low SNR makes STT unreliable — speech is barely distinguishable from noise
+- Very low SNR makes STT unreliable — speech barely distinguishable from noise
 - Wake word scores hover around 0.3-0.5 (threshold set to 0.3 to compensate)
-- **Fix**: Better mic, directional mic, or hardware gain adjustment
+- **Fix**: ReSpeaker USB mic array with DSP (on order)
 
-### 2. STT Accuracy (High)
+### 3. STT Accuracy (High)
 - Medium Vosk model (`vosk-model-en-us-0.22-lgraph`, 205MB) still produces poor transcripts
-- "what time is it" → "the", "can you hear me" → "songs on"
 - Root cause is low mic SNR, not model quality
-- Large Vosk model (1.8GB) was better but caused OOM reboot (4GB+ RAM usage)
-- **Consider**: Whisper.cpp for better accuracy, or fix mic first
-
-### 3. TTS Audio Output (Medium)
-- `voice.speak()` returns `True` but audio sometimes not heard
-- Output device is USB PnP Audio Device (hw:3,0), device index 1
-- Direct tests (`sd.play` on device 1) work, but during voice loop it's inconsistent
-- May be a timing/device contention issue with mic on same USB hub
+- Large Vosk model (1.8GB) caused OOM reboot (4GB+ RAM)
+- **Fix**: Better mic hardware first, then consider Whisper.cpp
 
 ### 4. Self-Trigger Residual (Low)
-- Mostly fixed but still occasionally triggers after TTS on louder responses
-- Current mitigation: mute during TTS + 3.5s cooldown + queue drain + single-word filter
-- Could still improve with longer cooldown or hardware mic/speaker isolation
-
-### 5. Gateway Latency (Medium)
-- Claude response time: 4-8 seconds via OpenClaw gateway
-- TTS synthesis: 3-7 seconds on Pi CPU (scales with response length)
-- Total round trip: 8-15 seconds from end of speech to hearing response
-- Personality payload (~1KB) sent with every message adds some overhead
+- Mostly fixed with software workarounds
+- ReSpeaker with hardware AEC will eliminate this entirely
 
 ## Architecture
 
 ```
-[USB Mic] → OpenWakeWord → Vosk STT → OpenClaw Gateway → Claude
-                                                              ↓
-[USB Speaker] ← Kokoro TTS ← main.py ← WebSocket ← Claude response
-                                  ↓
+[USB Mic] → OpenWakeWord → Vosk STT → OpenClaw Gateway → Claude API
+                                                              ↓ (streaming deltas)
+[USB Speaker] ← Kokoro TTS ←──── sentence queue ←──── GatewayBridge
+                    ↓ (sentence 1 plays while sentence 2 generates)
 [HDMI Display] ← Chromium ← FaceServer (ws:18793 + http:8080) ← Live2D
+```
+
+### Streaming Flow (New)
+
+```
+Claude generates: "Same thing. Text or voice, it all comes through."
+                   ^^^^^^^^^^^^^^^^
+                   Sentence 1 detected at "."
+                   → pushed to TTS queue immediately
+                   → TTS starts speaking while Claude generates rest
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      Sentence 2 arrives, queued for TTS
+                                      → plays right after sentence 1 finishes
 ```
 
 ## Key Config (config.yaml)
@@ -76,51 +84,37 @@ can:
   interface: mock
 ```
 
+## Gateway Agent Configuration
+
+**Critical for performance.** The Pi node sends `sessionKey: "agent:mira:main"`.
+
+The gateway must have:
+1. An agent named `mira` (exact match)
+2. Personality/system prompt from `data/personality.md` configured in the agent's `SOUL.md`
+3. System prompt must NOT be injected in user messages (kills prompt caching, adds 5-10s TTFT)
+
+Without this, TTFT degrades from ~1-2s to 5-10s+ per message.
+
 ## Key Files Modified This Session
 
 | File | Changes |
 |------|---------|
-| `src/main.py` | Voice loop timing, mute-during-TTS, gateway personality, no local LLM fallback |
-| `src/voice_input.py` | Mute flag, audio queue drain, RMS/ww debug logging, single-word filter |
-| `src/voice.py` | Chime generator (unused — causes self-trigger), load all VVM files |
-| `src/node.py` | Personality injection into gateway messages |
-| `src/face.py` | Listening expression → surprised |
-| `src/can_reader.py` | Skip DBC loading in mock mode |
-| `data/personality.md` | Rewritten for cyberpunk avatar (mature, composed, voice-first) |
+| `src/main.py` | Streaming TTS pipeline, sentence-chunked voice output, TTFT timing, removed personality injection |
+| `src/node.py` | Streaming deltas via `on_delta` callback, removed client-side personality injection, session key `agent:mira:main` |
+| `src/voice.py` | `speak_streamed()` — consumes sentence queue for back-to-back TTS |
+| `ui/live2d_test.html` | More dramatic expressions with head angle changes |
+| `docs/GATEWAY_SETUP.md` | Agent name matching requirement, system prompt vs user message caching |
 
-## Hardware Recommendations
+## Hardware
 
-### Priority 1: Better Microphone
-The single biggest improvement. Current USB mic has terrible SNR.
+### On Order
+- **ReSpeaker USB Mic Array** with DSP — hardware AEC, better SNR, directional pickup
 
-- **ReSpeaker 2-Mic Pi HAT** (~$10) — sits on GPIO, has onboard ADC, designed for voice assistants. Built-in AEC (acoustic echo cancellation) which would eliminate the self-trigger problem
-- **ReSpeaker 4-Mic Array** (~$30) — beamforming for directional pickup, better noise rejection. Also has AEC
-- **Seeed Studio USB Mic Array** (~$40) — 4-mic array with onboard DSP, works via USB. Best option if you don't want to use GPIO
-
-### Priority 2: Dedicated Speaker (Separate from Mic)
-Physical separation between mic and speaker reduces acoustic feedback (self-triggering).
-
-- **3.5mm speaker via USB DAC** — keep mic and speaker on separate USB devices
-- **I2S DAC + amplifier HAT** (e.g., HiFiBerry, Adafruit I2S) — frees up USB, better audio quality, no driver issues
-
-### Priority 3: NVMe Drive
-Current SD card is fine for the medium Vosk model. NVMe would help if you want:
-
-- **Large Vosk model** (1.8GB) — faster loading, but still 4GB RAM issue
-- **Whisper.cpp models** — base/small models run on Pi 5, need fast disk for loading
-- **General responsiveness** — faster pip installs, model loading, log writes
-
-Recommended: **Pimoroni NVMe Base** or **Geekworm X1001** — both sit under the Pi 5
-
-### Priority 4: Coral USB Accelerator (~$30)
-- Offloads wake word detection to dedicated TPU
-- Frees CPU for STT/TTS
-- OpenWakeWord supports Coral acceleration
-
-### Optional: USB Sound Card with Echo Cancellation
-- **Jabra Speak 410/510** — all-in-one speakerphone with hardware AEC, great mic array
-- Eliminates self-trigger problem entirely at the hardware level
-- One USB device replaces both current mic and speaker
+### Current
+- Raspberry Pi 5 (8GB)
+- Generic USB PnP mic + USB PnP speaker (separate devices)
+- WaveShare 2-CH CAN HAT (unused, mock mode)
+- HDMI display for Live2D avatar
 
 ## Launch Commands
 
@@ -133,7 +127,11 @@ DISPLAY=:0 WAYLAND_DISPLAY=wayland-0 XDG_RUNTIME_DIR=/run/user/1000 \
 
 # Main voice loop
 cd /home/piichan/mira
-PYTHONUNBUFFERED=1 nohup /home/piichan/mira/venv/bin/python -m src.main > /tmp/mira.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup ./venv/bin/python -m src.main > /tmp/mira.log 2>&1 &
+
+# Text mode (for testing gateway without mic)
+cd /home/piichan/mira
+PYTHONUNBUFFERED=1 ./venv/bin/python -m src.main --simulate --no-mic
 
 # Monitor logs
 tail -f /tmp/mira.log

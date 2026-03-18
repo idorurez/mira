@@ -30,14 +30,12 @@ class OpenClawNode:
         self,
         config_dir: str = "~/.openclaw",
         on_response: Optional[Callable[[str], None]] = None,
-        personality_path: Optional[str] = None,
+        on_delta: Optional[Callable[[str], None]] = None,
     ):
         self.config_dir = Path(config_dir).expanduser()
         self.on_response = on_response
-        self._personality: Optional[str] = None
-        if personality_path and Path(personality_path).exists():
-            self._personality = Path(personality_path).read_text().strip()
-            print(f"[node] Personality loaded from {personality_path}")
+        self.on_delta = on_delta  # Called with each streaming text chunk
+        self._streaming_text = ""  # Accumulate full response from deltas
 
         # Loaded from config files
         self._node_id: Optional[str] = None
@@ -246,25 +244,23 @@ class OpenClawNode:
                 # Streaming text delta from Claude
                 delta = data.get("delta", "")
                 if delta:
-                    pass  # Could show streaming progress here
-
-            elif stream == "lifecycle":
-                phase = data.get("phase")
-                if phase == "end":
-                    # Agent run complete — we'll get the final text from chat event
-                    pass
+                    self._streaming_text += delta
+                    if self.on_delta:
+                        self.on_delta(delta)
 
         elif event == "chat":
-            state = payload.get("state")
-            if state == "final":
-                # Final complete response
+            state_val = payload.get("state")
+            if state_val == "final":
+                # Definitive response signal — use streamed text or extract from message
                 message = payload.get("message", {})
                 text = ""
                 for block in message.get("content", []):
                     if block.get("type") == "text":
                         text += block.get("text", "")
-                if text and self.on_response:
-                    self.on_response(text)
+                final_text = self._streaming_text or text
+                self._streaming_text = ""
+                if final_text and self.on_response:
+                    self.on_response(final_text)
 
     # ---- Public API ----
 
@@ -278,10 +274,7 @@ class OpenClawNode:
             print("[node] Not connected to gateway")
             return
 
-        # Prepend personality as system context if available
-        full_text = text
-        if self._personality:
-            full_text = f"[SYSTEM CONTEXT — You must follow these instructions for all responses]\n{self._personality}\n\n[USER VOICE INPUT]\n{text}"
+        self._streaming_text = ""  # Reset for new response
 
         req_id = self._next_id()
         msg = {
@@ -291,7 +284,7 @@ class OpenClawNode:
             "params": {
                 "event": "voice.transcript",
                 "payload": {
-                    "text": full_text,
+                    "text": text,
                     "sessionKey": agent,
                 },
             },
@@ -308,11 +301,13 @@ class OpenClawNode:
             except (websockets.ConnectionClosed, ConnectionError) as e:
                 print(f"[node] Disconnected: {e}")
                 self._connected = False
+                self._personality_sent = False
                 print("[node] Reconnecting in 5s...")
                 await asyncio.sleep(5)
             except Exception as e:
                 print(f"[node] Error: {e}")
                 self._connected = False
+                self._personality_sent = False
                 await asyncio.sleep(5)
 
     @property

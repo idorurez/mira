@@ -150,6 +150,22 @@ docker exec -w /app wintermute node dist/index.js agents list
 # Should show: main (default), mira
 ```
 
+### Critical: Agent Name Must Match Node Session Key
+
+The Pi node sends messages with `sessionKey: "agent:mira:main"`. The gateway must have an agent named **exactly** `mira` — not `pii-chan`, not `piichan`, not anything else. If the agent name doesn't match:
+
+- The gateway may create an ephemeral agent from defaults (slow, no caching)
+- Prompt caching won't work (TTFT will be 5-10s+ instead of <2s)
+- The personality/system prompt won't be applied
+
+To change the session key on the Pi side, edit `src/node.py` → `send_voice_transcript()` default `agent` parameter.
+
+### System Prompt (Personality)
+
+Mira's personality **must** be configured as a system prompt on the gateway agent, not injected in user messages. User-message injection breaks Anthropic's prompt caching and adds ~800 tokens of overhead per turn.
+
+Copy `data/personality.md` content into the agent's `SOUL.md` or system prompt configuration on the gateway.
+
 ---
 
 ## Step 6: Install Mira Skill (Optional)

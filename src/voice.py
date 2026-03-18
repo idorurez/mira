@@ -9,6 +9,7 @@ Engines:
 """
 import io
 import os
+import queue
 import re
 import wave
 import threading
@@ -92,6 +93,22 @@ def _generate_chime(sample_rate=24000, duration=0.15):
     return (tone * envelope).astype(np.float32), sample_rate
 
 
+def _find_device_by_name(name_fragment: str, kind: str = "output") -> Optional[int]:
+    """Find audio device index by partial name match. Returns None if not found."""
+    if not AUDIO_AVAILABLE:
+        return None
+    try:
+        for i, dev in enumerate(sd.query_devices()):
+            if name_fragment.lower() in dev["name"].lower():
+                if kind == "output" and dev["max_output_channels"] > 0:
+                    return i
+                elif kind == "input" and dev["max_input_channels"] > 0:
+                    return i
+        return None
+    except Exception:
+        return None
+
+
 class Voice:
     """
     Text-to-speech output for ミラ.
@@ -116,13 +133,23 @@ class Voice:
                  speaker_id: int = 3, speed: float = 1.0,
                  volume: float = 0.3):
         self.engine = engine
-        self.output_device = output_device
         self.kokoro_voice = kokoro_voice
         self.speaker_id = speaker_id
         self.speed = speed
         self.volume = volume
         self._speaking = False
         self._lock = threading.Lock()
+
+        # Resolve output device — validate index, fall back to name lookup
+        self.output_device = output_device
+        if AUDIO_AVAILABLE and output_device is not None:
+            try:
+                sd.query_devices(output_device)
+            except Exception:
+                resolved = _find_device_by_name("USB PnP Audio", "output")
+                if resolved is not None:
+                    print(f"[voice] Output device {output_device} not found, using {resolved}")
+                    self.output_device = resolved
 
         # Lazy-init engines
         self._kokoro_ok = None
@@ -170,6 +197,61 @@ class Voice:
             t = threading.Thread(target=self._speak_sync, args=(text,), daemon=True)
             t.start()
             return True
+
+    def speak_streamed(self, sentence_queue: queue.Queue, on_start=None, on_done=None):
+        """Consume sentences from a queue and speak them back-to-back.
+
+        Blocks until a None sentinel is received on the queue.
+        Sentences are synthesized and played one at a time — while one plays,
+        the next can already be queued by the streaming source.
+
+        Args:
+            sentence_queue: Queue of sentence strings. None signals end.
+            on_start: Called before first sentence plays.
+            on_done: Called after all sentences have played.
+        """
+        if self.engine == "mock":
+            while True:
+                sentence = sentence_queue.get()
+                if sentence is None:
+                    break
+                print(f"[ミラ] {sentence}", end=" ", flush=True)
+            print()
+            if on_done:
+                on_done()
+            return
+
+        self._speaking = True
+        first = True
+        try:
+            while True:
+                try:
+                    sentence = sentence_queue.get(timeout=15)
+                except queue.Empty:
+                    break
+                if sentence is None:
+                    break
+                if not sentence.strip():
+                    continue
+
+                if first and on_start:
+                    on_start()
+                    first = True
+
+                engine = self.engine
+                if engine == "auto":
+                    engine = self._pick_engine(sentence)
+
+                if engine == "kokoro":
+                    self._kokoro_speak(sentence)
+                elif engine == "voicevox":
+                    self._voicevox_speak(sentence)
+        except Exception as e:
+            print(f"TTS stream error: {e}")
+        finally:
+            self._speaking = False
+            if on_done:
+                on_done()
 
     def _pick_engine(self, text: str) -> str:
         """For auto mode: choose engine based on text content."""

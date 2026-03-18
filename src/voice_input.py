@@ -72,7 +72,7 @@ class VoiceInput:
         self.vosk_model_path = vosk_model_path
         self.wake_word = wake_word
         self.wake_threshold = wake_threshold
-        self.input_device = input_device
+        self.input_device = self._resolve_input_device(input_device)
         self.max_record_seconds = max_record_seconds
         self.silence_threshold = silence_threshold
         self.silence_duration = silence_duration
@@ -85,6 +85,22 @@ class VoiceInput:
         self._recording = False  # True while recording user speech
         self.muted = False  # Set True to suppress wake word detection (e.g. during TTS)
         self._audio_queue: Optional[queue.Queue] = None
+
+    @staticmethod
+    def _resolve_input_device(device: Optional[int]) -> Optional[int]:
+        """Validate device index, fall back to name lookup if invalid."""
+        if device is None:
+            return None
+        try:
+            sd.query_devices(device, 'input')
+            return device
+        except Exception:
+            # Search by name
+            for i, dev in enumerate(sd.query_devices()):
+                if dev["max_input_channels"] > 0 and "usb" in dev["name"].lower():
+                    print(f"  [voice_input] Device {device} not found, using [{i}] {dev['name']}")
+                    return i
+            return None
 
     @property
     def is_listening(self) -> bool:
@@ -200,10 +216,6 @@ class VoiceInput:
                 prediction = oww.predict(audio_int16)
                 score = prediction.get(target_ww, 0)
 
-                # Debug: log score periodically when non-trivial
-                if score > 0.05:
-                    print(f"  [ww score: {score:.3f}]")
-
                 if score > self.wake_threshold:
                     print(f"  Wake word detected! (score: {score:.2f})")
                     oww.reset()
@@ -238,7 +250,6 @@ class VoiceInput:
         chunks = []
         silence_start = None
         start_time = time.time()
-        rms_samples = []
 
         while self._running:
             elapsed = time.time() - start_time
@@ -256,10 +267,6 @@ class VoiceInput:
 
             # Check RMS for silence detection (on original float audio)
             rms = np.sqrt(np.mean(chunk ** 2))
-            rms_samples.append(rms)
-            # Log RMS periodically (every ~0.5s)
-            if len(rms_samples) % 6 == 0:
-                print(f"  [rms: {rms:.4f} | thresh: {self.silence_threshold}]")
             if rms < self.silence_threshold:
                 if silence_start is None:
                     silence_start = time.time()
