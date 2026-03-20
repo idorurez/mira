@@ -76,45 +76,107 @@
             opacity: 1;
         }
 
-        #status {
+        #status-bar {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            color: #0f0;
-            font-family: monospace;
-            font-size: 14px;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
             z-index: 100;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 12px;
+            padding: 8px 14px;
+            font-family: monospace;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0.85;
+            transition: opacity 0.5s;
+        }
+
+        .status-group {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
             border-radius: 4px;
         }
-        #status.warn { color: #fa0; }
-        #status.error { color: #f44; }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot.green { background: #0f0; box-shadow: 0 0 4px #0f0; }
+        .dot.yellow { background: #fa0; box-shadow: 0 0 4px #fa0; }
+        .dot.red { background: #f44; box-shadow: 0 0 4px #f44; }
+        .dot.gray { background: #555; }
+
+        .status-label { color: #aaa; }
+        .status-value { color: #fff; }
     </style>
 </head>
 <body>
 
 <div id="avatar" class="idle">
     <!-- All expressions preloaded, only one active at a time -->
-    <img id="expr-neutral" src="avatar/mira/expressions/mira_neutral_00002_.png" class="active">
-    <img id="expr-happy" src="avatar/mira/expressions/mira_happy_00004_.png">
-    <img id="expr-sad" src="avatar/mira/expressions/mira_sad_00001_.png">
-    <img id="expr-surprised" src="avatar/mira/expressions/mira_surprised_00001_.png">
-    <img id="expr-thinking" src="avatar/mira/expressions/mira_thinking_00001_.png">
-    <img id="expr-talking" src="avatar/mira/expressions/mira_talking_00003_.png">
-    <img id="expr-sleepy" src="avatar/mira/expressions/mira_sleepy_00001_.png">
-    <img id="expr-confused" src="avatar/mira/expressions/mira_confused_00017_.png">
-    <img id="expr-excited" src="avatar/mira/expressions/mira_excited_00013_.png">
-    <img id="expr-angry" src="avatar/mira/expressions/mira_confused_00017_.png">
-    <img id="blink-overlay" src="avatar/mira/expressions/mira_eyes_closed_001_nb.png">
+    <img id="expr-neutral" src="avatar/mira/expressions/mira_neutral.png" class="active">
+    <img id="expr-happy" src="avatar/mira/expressions/mira_happy.png">
+    <img id="expr-sad" src="avatar/mira/expressions/mira_neutral.png">
+    <img id="expr-surprised" src="avatar/mira/expressions/mira_surprised.png">
+    <img id="expr-thinking" src="avatar/mira/expressions/mira_thinking.png">
+    <img id="expr-talking" src="avatar/mira/expressions/mira_talking.png">
+    <img id="expr-sleepy" src="avatar/mira/expressions/mira_sleepy.png">
+    <img id="expr-confused" src="avatar/mira/expressions/mira_confused.png">
+    <img id="expr-excited" src="avatar/mira/expressions/mira_happy.png">
+    <img id="expr-angry" src="avatar/mira/expressions/mira_confused.png">
+    <img id="blink-overlay" src="avatar/mira/expressions/mira_eyes_closed.png">
 </div>
 
-<div id="status">Loading...</div>
+<div id="status-bar">
+    <div class="status-group">
+        <div class="status-item" id="st-face">
+            <span class="dot gray" id="dot-face"></span>
+            <span class="status-label">Face</span>
+            <span class="status-value" id="val-face">--</span>
+        </div>
+    </div>
+    <div class="status-group">
+        <div class="status-item" id="st-gateway">
+            <span class="dot gray" id="dot-gateway"></span>
+            <span class="status-label">Gateway</span>
+            <span class="status-value" id="val-gateway">--</span>
+        </div>
+        <div class="status-item" id="st-net">
+            <span class="dot gray" id="dot-net"></span>
+            <span class="status-label">Net</span>
+            <span class="status-value" id="val-net">--</span>
+        </div>
+    </div>
+</div>
 
 <script>
-const statusEl = document.getElementById('status');
 const avatarEl = document.getElementById('avatar');
 const blinkEl = document.getElementById('blink-overlay');
+
+// Status indicators
+const dotFace = document.getElementById('dot-face');
+const valFace = document.getElementById('val-face');
+const dotGateway = document.getElementById('dot-gateway');
+const valGateway = document.getElementById('val-gateway');
+const dotNet = document.getElementById('dot-net');
+const valNet = document.getElementById('val-net');
+
+function setStatus(dot, val, color, text) {
+    dot.className = 'dot ' + color;
+    val.textContent = text;
+}
 
 let currentExpression = 'neutral';
 let isSpeaking = false;
@@ -207,48 +269,66 @@ function stopBlink() {
     blinkEl.classList.remove('blink');
 }
 
-// === WEBSOCKET ===
+// === FACE WEBSOCKET ===
 
 function connectWebSocket() {
     const wsUrl = `ws://${window.location.hostname}:18793`;
-    statusEl.textContent = 'Connecting...';
+    setStatus(dotFace, valFace, 'yellow', 'connecting...');
 
     try {
         const ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
-            statusEl.textContent = 'Connected';
-            statusEl.className = '';
-            // Fade out status after a moment
-            setTimeout(() => { statusEl.style.opacity = '0.3'; }, 3000);
+            faceConnected = true;
+            setStatus(dotFace, valFace, 'green', 'online');
         };
 
         ws.onmessage = (event) => {
             try {
                 const state = JSON.parse(event.data);
                 applyState(state);
+
+                // Update gateway status from state if provided
+                if (state.gatewayConnected !== undefined) {
+                    if (state.gatewayConnected) {
+                        setStatus(dotGateway, valGateway, 'green', 'online');
+                    } else {
+                        setStatus(dotGateway, valGateway, 'red', 'offline');
+                    }
+                }
             } catch (e) {
                 console.warn('Bad message:', e);
             }
         };
 
         ws.onclose = () => {
-            statusEl.textContent = 'Disconnected';
-            statusEl.className = 'warn';
-            statusEl.style.opacity = '1';
+            setStatus(dotFace, valFace, 'red', 'offline');
             setTimeout(connectWebSocket, 3000);
         };
 
         ws.onerror = () => {
-            statusEl.textContent = 'No server';
-            statusEl.className = 'warn';
-            statusEl.style.opacity = '1';
+            setStatus(dotFace, valFace, 'red', 'error');
         };
     } catch (e) {
-        statusEl.textContent = 'Standalone';
-        statusEl.className = 'warn';
+        setStatus(dotFace, valFace, 'red', 'error');
     }
 }
+
+// === NETWORK CHECK ===
+
+function checkNetwork() {
+    if (navigator.onLine) {
+        // Verify with a real fetch
+        fetch('https://httpbin.org/get', { mode: 'no-cors', cache: 'no-store' })
+            .then(() => setStatus(dotNet, valNet, 'green', 'online'))
+            .catch(() => setStatus(dotNet, valNet, 'red', 'no internet'));
+    } else {
+        setStatus(dotNet, valNet, 'red', 'offline');
+    }
+}
+
+window.addEventListener('online', () => checkNetwork());
+window.addEventListener('offline', () => setStatus(dotNet, valNet, 'red', 'offline'));
 
 function applyState(state) {
     // Handle speaking state changes first
@@ -285,28 +365,25 @@ document.addEventListener('keydown', (e) => {
 
 // === START ===
 
-// Preload all images
-const images = document.querySelectorAll('#avatar img');
-let loaded = 0;
-images.forEach(img => {
-    if (img.complete) {
-        loaded++;
-    } else {
-        img.addEventListener('load', () => {
-            loaded++;
-            if (loaded === images.length) {
-                statusEl.textContent = 'Ready';
-            }
-        });
-    }
-});
-
-if (loaded === images.length) {
-    statusEl.textContent = 'Ready';
-}
+setStatus(dotFace, valFace, 'gray', '--');
+setStatus(dotGateway, valGateway, 'gray', '--');
+setStatus(dotNet, valNet, 'gray', 'checking...');
 
 scheduleBlink();
 connectWebSocket();
+checkNetwork();
+setInterval(checkNetwork, 30000);
+
+// Auto-reload if face server never connects within 15s
+// (handles case where Chromium loads before server is up)
+let faceConnected = false;
+const origOnOpen = null;
+setTimeout(() => {
+    if (!faceConnected) {
+        console.log('Face server not reachable, reloading...');
+        location.reload();
+    }
+}, 15000);
 </script>
 
 </body>

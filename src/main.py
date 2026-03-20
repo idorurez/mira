@@ -541,6 +541,8 @@ def run_voice_mode(args, config):
         gateway = GatewayBridge()
         if not gateway.start():
             gateway = None
+    face.controller.state.gateway_connected = gateway is not None and gateway.connected
+    face.controller._notify()
 
     brain.start_session()
     can.start()

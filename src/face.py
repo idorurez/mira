@@ -45,7 +45,8 @@ class FaceState:
     eye_target_x: float = 0.0  # -1.0 to 1.0, for eye tracking
     eye_target_y: float = 0.0
     transition_duration_ms: int = 200  # smooth transition time
-    
+    gateway_connected: bool = False  # OpenClaw gateway connection status
+
     def to_dict(self) -> dict:
         return {
             "expression": self.expression.value,
@@ -55,6 +56,7 @@ class FaceState:
             "eyeTargetX": self.eye_target_x,
             "eyeTargetY": self.eye_target_y,
             "transitionDurationMs": self.transition_duration_ms,
+            "gatewayConnected": self.gateway_connected,
             "timestamp": int(time.time() * 1000),
         }
     
