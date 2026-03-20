@@ -122,13 +122,6 @@ The layers will be deformed to create these expressions:
 
 ---
 
-## Budget & Timeline
-
-- **Budget:** $_____ (adjust based on artist rates)
-- **Timeline:** _____ days/weeks
-
----
-
 ## Contact
 
 Feel free to ask questions about the character design or technical requirements before starting.
