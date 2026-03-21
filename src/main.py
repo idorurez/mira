@@ -542,7 +542,6 @@ def run_voice_mode(args, config):
         if not gateway.start():
             gateway = None
     face.controller.state.gateway_connected = gateway is not None and gateway.connected
-    face.controller._notify()
 
     brain.start_session()
     can.start()
@@ -561,6 +560,7 @@ def run_voice_mode(args, config):
             return
         print("  [wake]")
         face.listening()
+        voice.chime(ascending=True)
 
     def on_speech(text):
         """Called when speech is transcribed after wake word."""
