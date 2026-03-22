@@ -1,0 +1,43 @@
+# openWakeWord training config for "miraku" wake word
+#
+# Training pipeline (run on Linux/WSL2 with CUDA):
+#   1. Generate synthetic samples: python scripts/generate_wake_samples.py
+#   2. Clone training repo: git clone https://github.com/CoreWorxLab/openwakeword-training.git
+#   3. Follow their setup for Kokoro-based training
+#   4. Use this config as reference for the training parameters
+#
+# Alternative: use the official openWakeWord training notebook
+#   https://github.com/dscripka/openWakeWord/blob/main/notebooks/automatic_model_training.ipynb
+
+target_phrase: ["miraku"]
+n_samples: 10000
+n_samples_val: 2000
+
+# Model architecture
+model_type: "dnn"
+layer_size: 32
+steps: 50000
+learning_rate: 0.001
+batch_size: 512
+
+# Detection tuning
+target_false_positives_per_hour: 0.2
+max_negative_weight: 1500
+
+# Adversarial negatives — similar-sounding phrases to reject
+custom_negative_phrases:
+  - "miracle"
+  - "miraculous"
+  - "mirror"
+  - "mural"
+  - "morocco"
+  - "meraki"
+  - "maracas"
+  - "mikado"
+  - "karaoke"
+  - "teriyaki"
+
+# Paths (adjust for your environment)
+positive_samples_dir: ./training/positive
+negative_samples_dir: ./training/negative
+output_dir: ./models/wakeword

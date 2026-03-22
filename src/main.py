@@ -88,6 +88,7 @@ def init_components(args, config):
             voice_input = VoiceInput(
                 vosk_model_path=config.voice_input.vosk_model_path,
                 wake_word=config.voice_input.wake_word,
+                wake_word_model_path=config.voice_input.wake_word_model_path,
                 wake_threshold=config.voice_input.wake_word_threshold,
                 input_device=config.audio.input_device,
                 max_record_seconds=config.voice_input.max_record_seconds,

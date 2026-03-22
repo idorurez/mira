@@ -26,7 +26,9 @@ voice_input:
   vosk_model_path: ./models/vosk-model-small-en-us-0.15
   wake_word_engine: openwakeword
   # Available wake words: hey_jarvis, alexa, etc.
+  # For custom trained models, set wake_word_model_path
   wake_word: hey_jarvis
+  # wake_word_model_path: ./models/wakeword/miraku.tflite
   wake_word_threshold: 0.5
   max_record_seconds: 5.0
   silence_threshold: 0.01

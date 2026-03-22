@@ -33,6 +33,7 @@ class VoiceInputConfig:
     vosk_model_path: str = "./models/vosk-model-small-en-us-0.15"
     wake_word_engine: str = "openwakeword"
     wake_word: str = "hey_jarvis"  # openwakeword model name
+    wake_word_model_path: Optional[str] = None  # path to custom .tflite model
     wake_word_threshold: float = 0.5
     max_record_seconds: float = 5.0
     silence_threshold: float = 0.20

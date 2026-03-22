@@ -61,6 +61,7 @@ class VoiceInput:
         self,
         vosk_model_path: str = "./models/vosk-model-small-en-us-0.15",
         wake_word: str = "hey_jarvis",
+        wake_word_model_path: Optional[str] = None,
         wake_threshold: float = 0.5,
         input_device: Optional[int] = None,
         max_record_seconds: float = 5.0,
@@ -71,6 +72,7 @@ class VoiceInput:
     ):
         self.vosk_model_path = vosk_model_path
         self.wake_word = wake_word
+        self.wake_word_model_path = wake_word_model_path
         self.wake_threshold = wake_threshold
         self.input_device = self._resolve_input_device(input_device)
         self.max_record_seconds = max_record_seconds
@@ -163,15 +165,22 @@ class VoiceInput:
         self._ensure_stt()
 
         # Load wake word model
-        oww = OWWModel()
-        available_words = list(oww.models.keys())
-        print(f"  Wake words available: {available_words}")
+        if self.wake_word_model_path and Path(self.wake_word_model_path).exists():
+            # Custom trained model
+            oww = OWWModel(wakeword_models=[self.wake_word_model_path])
+            available_words = list(oww.models.keys())
+            print(f"  Custom wake word model: {self.wake_word_model_path}")
+            target_ww = available_words[0] if available_words else self.wake_word
+        else:
+            # Built-in models
+            oww = OWWModel()
+            available_words = list(oww.models.keys())
+            target_ww = self.wake_word
+            if target_ww not in available_words:
+                print(f"  Warning: '{target_ww}' not in available models, using first: {available_words[0]}")
+                target_ww = available_words[0]
 
-        # Pick the matching wake word (or first available)
-        target_ww = self.wake_word
-        if target_ww not in available_words:
-            print(f"  Warning: '{target_ww}' not in available models, using first: {available_words[0]}")
-            target_ww = available_words[0]
+        print(f"  Wake words available: {available_words}")
         print(f"  Listening for: '{target_ww}'")
 
         # Get mic's native sample rate
