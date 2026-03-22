@@ -70,6 +70,7 @@ def init_components(args, config):
             engine=config.voice.engine,
             output_device=config.audio.output_device,
             kokoro_voice=config.voice.kokoro_voice,
+            piper_model=config.voice.piper_model,
             speaker_id=config.voice.speaker_id,
             speed=config.voice.speed,
             volume=config.voice.volume,
@@ -203,12 +204,13 @@ class GatewayBridge:
     # Sentence-ending punctuation for chunking streamed text
     _SENTENCE_END = re.compile(r'[.!?]\s|[.!?]$')
 
-    def __init__(self):
+    def __init__(self, on_connection_change=None):
         self.node = None
         self._loop = None
         self._thread = None
         self._response_text = None
         self._response_event = threading.Event()
+        self._on_connection_change = on_connection_change
 
         # Streaming state
         self._delta_callback = None
@@ -257,6 +259,7 @@ class GatewayBridge:
             self.node = OpenClawNode(
                 on_response=on_response,
                 on_delta=on_delta,
+                on_connection_change=self._on_connection_change,
             )
             self.node.load_config()
         except Exception as e:
@@ -538,10 +541,18 @@ def run_voice_mode(args, config):
     # Gateway (primary brain — Claude via OpenClaw)
     gateway = None
     if not args.no_gateway:
-        gateway = GatewayBridge()
+        def on_gw_connection_change(connected):
+            face.controller.state.gateway_connected = connected
+            if connected and gateway and gateway.node:
+                face.controller.state.gateway_last_connected = gateway.node.last_connected_at or 0
+            face.controller._notify()
+
+        gateway = GatewayBridge(on_connection_change=on_gw_connection_change)
         if not gateway.start():
             gateway = None
     face.controller.state.gateway_connected = gateway is not None and gateway.connected
+    if gateway and gateway.node and gateway.node.last_connected_at:
+        face.controller.state.gateway_last_connected = gateway.node.last_connected_at
 
     brain.start_session()
     can.start()

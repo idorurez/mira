@@ -46,6 +46,7 @@ class FaceState:
     eye_target_y: float = 0.0
     transition_duration_ms: int = 200  # smooth transition time
     gateway_connected: bool = False  # OpenClaw gateway connection status
+    gateway_last_connected: float = 0  # epoch timestamp of last successful connection
 
     def to_dict(self) -> dict:
         return {
@@ -57,6 +58,7 @@ class FaceState:
             "eyeTargetY": self.eye_target_y,
             "transitionDurationMs": self.transition_duration_ms,
             "gatewayConnected": self.gateway_connected,
+            "gatewayLastConnected": self.gateway_last_connected,
             "timestamp": int(time.time() * 1000),
         }
     

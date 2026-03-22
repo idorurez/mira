@@ -3,6 +3,7 @@ Voice Output - TTS with auto language detection
 
 Engines:
 - "kokoro": Kokoro-82M TTS (expressive, offline, English)
+- "piper": Piper TTS (fast, offline, English)
 - "voicevox": VOICEVOX Core (Japanese, local)
 - "auto": Auto-detect language per utterance — Japanese text → VOICEVOX, English → Kokoro
 - "mock": Print only, no audio
@@ -34,6 +35,12 @@ try:
     KOKORO_AVAILABLE = True
 except ImportError:
     KOKORO_AVAILABLE = False
+
+try:
+    from piper.voice import PiperVoice
+    PIPER_AVAILABLE = True
+except ImportError:
+    PIPER_AVAILABLE = False
 
 # Japanese/CJK detection
 _CJK_RE = re.compile(r'[\u3000-\u9fff\uf900-\ufaff\U00020000-\U0002fa1f]')
@@ -130,12 +137,17 @@ class Voice:
     _KOKORO_MODEL = "./models/kokoro/kokoro-v1.0.onnx"
     _KOKORO_VOICES = "./models/kokoro/voices-v1.0.bin"
 
+    # Default path for Piper model
+    _PIPER_MODEL = "./models/piper/en_US-lessac-medium.onnx"
+
     def __init__(self, engine: str = "mock", output_device: Optional[int] = None,
                  kokoro_voice: str = "af_jessica",
+                 piper_model: Optional[str] = None,
                  speaker_id: int = 3, speed: float = 1.0,
                  volume: float = 0.3):
         self.engine = engine
         self.kokoro_voice = kokoro_voice
+        self.piper_model_path = piper_model or self._PIPER_MODEL
         self.speaker_id = speaker_id
         self.speed = speed
         self.volume = volume
@@ -156,8 +168,10 @@ class Voice:
         # Lazy-init engines
         self._kokoro_ok = None
         self._voicevox_ok = None
+        self._piper_ok = None
         self._kokoro_engine: Optional["Kokoro"] = None
         self._vv_synth: Optional["Synthesizer"] = None
+        self._piper_voice: Optional["PiperVoice"] = None
 
     def is_available(self) -> bool:
         if self.engine == "mock":
@@ -166,6 +180,8 @@ class Voice:
             return self._check_kokoro() or self._check_voicevox()
         if self.engine == "kokoro":
             return self._check_kokoro()
+        if self.engine == "piper":
+            return self._check_piper()
         if self.engine == "voicevox":
             return self._check_voicevox()
         return False
@@ -178,6 +194,14 @@ class Voice:
                 and Path(self._KOKORO_VOICES).exists()
             )
         return self._kokoro_ok
+
+    def _check_piper(self) -> bool:
+        if self._piper_ok is None:
+            self._piper_ok = (
+                PIPER_AVAILABLE
+                and Path(self.piper_model_path).exists()
+            )
+        return self._piper_ok
 
     def _check_voicevox(self) -> bool:
         if self._voicevox_ok is None:
@@ -246,6 +270,8 @@ class Voice:
 
                 if engine == "kokoro":
                     self._kokoro_speak(sentence)
+                elif engine == "piper":
+                    self._piper_speak(sentence)
                 elif engine == "voicevox":
                     self._voicevox_speak(sentence)
         except Exception as e:
@@ -275,6 +301,8 @@ class Voice:
 
             if engine == "kokoro":
                 return self._kokoro_speak(text)
+            elif engine == "piper":
+                return self._piper_speak(text)
             elif engine == "voicevox":
                 return self._voicevox_speak(text)
             else:
@@ -307,6 +335,38 @@ class Voice:
         samples, sr = kokoro.create(text, voice=self.kokoro_voice, speed=self.speed)
         audio = (samples * self.volume).astype(np.float32)
         sd.play(audio, sr, device=self.output_device)
+        sd.wait()
+        return True
+
+    # ---- Piper TTS (English, fast) ----
+
+    def _init_piper(self) -> "PiperVoice":
+        """Lazy-init Piper voice on first use."""
+        if self._piper_voice is None:
+            self._piper_voice = PiperVoice.load(self.piper_model_path)
+            model_name = Path(self.piper_model_path).stem
+            print(f"[voice] Piper loaded (model={model_name})")
+        return self._piper_voice
+
+    def _piper_speak(self, text: str) -> bool:
+        text = _prep_for_kokoro(text)  # same cleanup — strip CJK, sub ミラ→Mira
+        if not text:
+            return True
+        if not PIPER_AVAILABLE or not AUDIO_AVAILABLE:
+            print(f"[ミラ] {text}")
+            return False
+
+        voice = self._init_piper()
+        buf = io.BytesIO()
+        with wave.open(buf, 'wb') as wf:
+            voice.synthesize(text, wf, length_scale=1.0 / self.speed)
+        buf.seek(0)
+        with wave.open(buf, 'rb') as wav:
+            sr = wav.getframerate()
+            audio = wav.readframes(wav.getnframes())
+            arr = np.frombuffer(audio, dtype=np.int16).astype(np.float32) / 32768.0
+        arr = arr * self.volume
+        sd.play(arr, sr, device=self.output_device)
         sd.wait()
         return True
 

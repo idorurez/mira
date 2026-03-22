@@ -31,11 +31,14 @@ class OpenClawNode:
         config_dir: str = "~/.openclaw",
         on_response: Optional[Callable[[str], None]] = None,
         on_delta: Optional[Callable[[str], None]] = None,
+        on_connection_change: Optional[Callable[[bool], None]] = None,
     ):
         self.config_dir = Path(config_dir).expanduser()
         self.on_response = on_response
         self.on_delta = on_delta  # Called with each streaming text chunk
+        self.on_connection_change = on_connection_change
         self._streaming_text = ""  # Accumulate full response from deltas
+        self.last_connected_at: Optional[float] = None
 
         # Loaded from config files
         self._node_id: Optional[str] = None
@@ -209,7 +212,10 @@ class OpenClawNode:
             raise RuntimeError(f"Connect failed: {result.get('error')}")
 
         self._connected = True
+        self.last_connected_at = time.time()
         print(f"[node] Connected to gateway!")
+        if self.on_connection_change:
+            self.on_connection_change(True)
 
     async def _recv_loop(self):
         """Process incoming messages from the gateway."""
@@ -302,12 +308,16 @@ class OpenClawNode:
                 print(f"[node] Disconnected: {e}")
                 self._connected = False
                 self._personality_sent = False
+                if self.on_connection_change:
+                    self.on_connection_change(False)
                 print("[node] Reconnecting in 5s...")
                 await asyncio.sleep(5)
             except Exception as e:
                 print(f"[node] Error: {e}")
                 self._connected = False
                 self._personality_sent = False
+                if self.on_connection_change:
+                    self.on_connection_change(False)
                 await asyncio.sleep(5)
 
     @property
